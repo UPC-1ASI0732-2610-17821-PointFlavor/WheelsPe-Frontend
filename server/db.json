@@ -1,427 +1,65 @@
 {
   "categories": [
-    "Pollo",
-    "Marina",
-    "Criolla",
-    "Chifa",
-    "Postres",
-    "Menú",
-    "Café",
-    "Parrillas"
+    { "id": "pollo",     "name": "Pollo a la brasa", "count": 28, "img": "pollo.jpg",      "blurb": "Crocante, ahumado, dorado." },
+    { "id": "criolla",   "name": "Comida criolla",   "count": 41, "img": "criolla.jpg",    "blurb": "Recetas de la abuela, sin atajos." },
+    { "id": "marina",    "name": "Comida marina",    "count": 22, "img": "marina.jpg",     "blurb": "Del muelle a la mesa." },
+    { "id": "chifa",     "name": "Chifa",            "count": 19, "img": "chifa.jpg",      "blurb": "Wok, jengibre, tradición." },
+    { "id": "parrillas", "name": "Parrillas",        "count": 14, "img": "parrillas.jpg",  "blurb": "Carbón vivo, corte preciso." },
+    { "id": "postres",   "name": "Postres",          "count": 26, "img": "postres.jpg",    "blurb": "Dulces de barrio." },
+    { "id": "cafe",      "name": "Café",             "count": 17, "img": "cafe.jpg",       "blurb": "Granos peruanos, oficio lento." },
+    { "id": "menu",      "name": "Menú del día",     "count": 33, "img": "menu.jpg",       "blurb": "Comer rico sin pensarlo." }
   ],
   "huariques": [
-    {
-      "id": 1,
-      "name": "El Brasero",
-      "category": "Pollo",
-      "price": 22,
-      "rating": 4.6,
-      "district": "Surco",
-      "near": true
-    },
-    {
-      "id": 2,
-      "name": "Rincón Marino",
-      "category": "Marina",
-      "price": 28,
-      "rating": 4.8,
-      "district": "Chorrillos",
-      "near": false
-    },
-    {
-      "id": 3,
-      "name": "Doña Peta Criolla",
-      "category": "Criolla",
-      "price": 25,
-      "rating": 4.5,
-      "district": "Barranco",
-      "near": true
-    },
-    {
-      "id": 4,
-      "name": "Chifa San Joy Lao",
-      "category": "Chifa",
-      "price": 21,
-      "rating": 4.4,
-      "district": "Miraflores",
-      "near": false
-    },
-    {
-      "id": 5,
-      "name": "La Dulcería",
-      "category": "Postres",
-      "price": 15,
-      "rating": 4.9,
-      "district": "San Isidro",
-      "near": false
-    },
-    {
-      "id": 6,
-      "name": "La Esquinita del Menú",
-      "category": "Menú",
-      "price": 12,
-      "rating": 4.2,
-      "district": "San Borja",
-      "near": true
-    },
-    {
-      "id": 7,
-      "name": "Café Aroma & Sabor",
-      "category": "Café",
-      "price": 10,
-      "rating": 4.7,
-      "district": "Miraflores",
-      "near": false
-    },
-    {
-      "id": 8,
-      "name": "Pollos Don Tito",
-      "category": "Pollo",
-      "price": 24,
-      "rating": 4.7,
-      "district": "La Molina",
-      "near": false
-    },
-    {
-      "id": 9,
-      "name": "Mar & Tierra",
-      "category": "Marina",
-      "price": 30,
-      "rating": 4.3,
-      "district": "San Miguel",
-      "near": true
-    },
-    {
-      "id": 10,
-      "name": "Café Central",
-      "category": "Café",
-      "price": 11,
-      "rating": 4.5,
-      "district": "Centro de Lima",
-      "near": false
-    },
-    {
-      "id": 11,
-      "name": "Parrilladas Don Mario",
-      "category": "Parrillas",
-      "price": 35,
-      "rating": 4.8,
-      "district": "Surquillo",
-      "near": true
-    },
-    {
-      "id": 12,
-      "name": "Brasa y Carbón",
-      "category": "Parrillas",
-      "price": 38,
-      "rating": 4.6,
-      "district": "Lince",
-      "near": false
-    },
-    {
-      "id": 13,
-      "name": "Fuego Criollo",
-      "category": "Parrillas",
-      "price": 36,
-      "rating": 4.7,
-      "district": "San Juan de Miraflores",
-      "near": true
-    },
-    {
-      "id": 14,
-      "name": "La Parrilla del Norte",
-      "category": "Parrillas",
-      "price": 33,
-      "rating": 4.5,
-      "district": "Los Olivos",
-      "near": false
-    },
-    {
-      "id": 15,
-      "name": "Punto Grill",
-      "category": "Parrillas",
-      "price": 40,
-      "rating": 4.9,
-      "district": "San Isidro",
-      "near": false
-    },
-    {
-      "id": 16,
-      "name": "La Picantería Peruana",
-      "category": "Criolla",
-      "price": 27,
-      "rating": 4.7,
-      "district": "Surquillo",
-      "near": true
-    },
-    {
-      "id": 17,
-      "name": "La Casa del Postre",
-      "category": "Postres",
-      "price": 13,
-      "rating": 4.7,
-      "district": "Surquillo",
-      "near": true
-    },
-    {
-      "id": 18,
-      "name": "Chifa Ping Chung Long",
-      "category": "Chifa",
-      "price": 20,
-      "rating": 4.2,
-      "district": "Lince",
-      "near": false
-    },
-    {
-      "id": 19,
-      "name": "El Sabor Norteño",
-      "category": "Criolla",
-      "price": 23,
-      "rating": 4.2,
-      "district": "Los Olivos",
-      "near": false
-    },
-    {
-      "id": 20,
-      "name": "La Ola Marina",
-      "category": "Marina",
-      "price": 29,
-      "rating": 4.4,
-      "district": "Magdalena",
-      "near": true
-    },
-    {
-      "id": 21,
-      "name": "Menu Don Lucho",
-      "category": "Menú",
-      "price": 12,
-      "rating": 4.2,
-      "district": "El Agustino",
-      "near": true
-    }
+    { "id": 1,  "name": "El Brasero",          "category": "Pollo a la brasa", "cat": "pollo",     "district": "Miraflores", "price": 32, "rating": 4.7, "reviews": 184, "near": true,  "img": "h-brasero.jpg",      "address": "Av. Larco 1102",        "tags": ["Familiar","Para llevar","WiFi"],            "promo": { "discount": 15, "label": "Martes y miércoles" }, "bio": "Tres generaciones haciendo el mismo pollo. Marinado 18 horas, leña de algarrobo, cremas hechas en casa.", "hours": "Lun–Dom · 12:00 – 23:00", "phone": "+51 1 445 8120", "lat": -12.121, "lng": -77.029 },
+    { "id": 2,  "name": "Don Lucho",           "category": "Pollo a la brasa", "cat": "pollo",     "district": "San Borja",  "price": 28, "rating": 4.5, "reviews": 142, "near": true,  "img": "h-donlucho.jpg",     "address": "Jr. Rosa Toro 845",     "tags": ["Familiar","Estacionamiento"],                                                                          "bio": "El secreto está en la papa frita. Receta sin cambios desde 1987.",                                       "hours": "Lun–Dom · 11:30 – 23:30", "phone": "+51 1 222 0931", "lat": -12.094, "lng": -76.999 },
+    { "id": 3,  "name": "Punto Grill",         "category": "Parrillas",        "cat": "parrillas", "district": "Surco",      "price": 58, "rating": 4.6, "reviews": 96,  "near": false, "img": "h-puntogrill.jpg",   "address": "Av. El Polo 740",       "tags": ["Romántico","Reservar"],                                                                                "bio": "Cortes argentinos, fuego de quebracho, carta corta y precisa.",                                          "hours": "Mar–Dom · 13:00 – 23:00", "phone": "+51 1 372 0099", "lat": -12.125, "lng": -77.000 },
+    { "id": 4,  "name": "Brasa y Carbón",      "category": "Parrillas",        "cat": "parrillas", "district": "Barranco",   "price": 52, "rating": 4.4, "reviews": 71,  "near": false, "img": "h-brasaycarbon.jpg", "address": "Jr. Centenario 215",    "tags": ["Terraza","Música en vivo"],                                                                            "bio": "Parrilla de barrio con alma de bistró. Corte del día y vino de la casa.",                                "hours": "Mié–Dom · 19:00 – 00:00", "phone": "+51 1 247 4411", "lat": -12.150, "lng": -77.020 },
+    { "id": 5,  "name": "La Marina",           "category": "Comida marina",    "cat": "marina",    "district": "Chorrillos", "price": 45, "rating": 4.8, "reviews": 213, "near": false, "img": "h-lamarina.jpg",     "address": "Malecón Grau s/n",      "tags": ["Vista al mar","Fresco diario"],             "promo": { "discount": 20, "label": "Almuerzo entre semana" }, "bio": "Pesca del día, ceviche al momento, pisco sour reconocido.",                                              "hours": "Mar–Dom · 12:00 – 17:00", "phone": "+51 1 467 1230", "lat": -12.169, "lng": -77.020 },
+    { "id": 6,  "name": "Rincón Marino",       "category": "Comida marina",    "cat": "marina",    "district": "San Miguel", "price": 38, "rating": 4.3, "reviews": 88,  "near": false, "img": "h-rinconmarino.jpg", "address": "Av. La Marina 2940",    "tags": ["Familiar","Menú niño"],                                                                                "bio": "Cevichería de barrio, porción generosa, leche de tigre legendaria.",                                     "hours": "Mar–Dom · 11:00 – 17:00", "phone": "+51 1 561 3322", "lat": -12.077, "lng": -77.087 },
+    { "id": 7,  "name": "Mary Tierra",         "category": "Comida criolla",   "cat": "criolla",   "district": "Magdalena",  "price": 30, "rating": 4.6, "reviews": 154, "near": true,  "img": "h-marytierra.jpg",   "address": "Jr. Echenique 511",     "tags": ["Tradicional","Caseros"],                                                                               "bio": "Ají de gallina, seco de res, arroz con pato. Como en casa.",                                             "hours": "Lun–Sab · 12:00 – 16:00", "phone": "+51 1 263 8090", "lat": -12.093, "lng": -77.072 },
+    { "id": 8,  "name": "La Picantería",       "category": "Comida criolla",   "cat": "criolla",   "district": "Surquillo",  "price": 42, "rating": 4.7, "reviews": 198, "near": true,  "img": "h-picanteria.jpg",   "address": "Calle Sta. Rosa 388",   "tags": ["Tradicional","Reservar"],                                                                              "bio": "Criollo arequipeño, picantes, chichas naturales, sobremesa larga.",                                      "hours": "Lun–Sab · 12:00 – 17:00", "phone": "+51 1 421 7700", "lat": -12.114, "lng": -77.020 },
+    { "id": 9,  "name": "Chifa Ping",          "category": "Chifa",            "cat": "chifa",     "district": "San Isidro", "price": 35, "rating": 4.5, "reviews": 121, "near": true,  "img": "h-chifaping.jpg",    "address": "Av. Camino Real 1240",  "tags": ["Para llevar","Familiar"],                                                                              "bio": "Chifa cantonés clásico. Aeropuerto, kam lu wantán, sopa wantán.",                                        "hours": "Lun–Dom · 12:00 – 23:00", "phone": "+51 1 421 1190", "lat": -12.098, "lng": -77.038 },
+    { "id": 10, "name": "San Joy Lao",         "category": "Chifa",            "cat": "chifa",     "district": "Centro",     "price": 33, "rating": 4.4, "reviews": 167, "near": false, "img": "h-sanjoylao.jpg",    "address": "Jr. Ucayali 779",       "tags": ["Histórico","Tradicional"],                                                                             "bio": "Más de 90 años en Capón. Wok, brasa, té caliente.",                                                      "hours": "Lun–Dom · 11:00 – 22:00", "phone": "+51 1 427 2032", "lat": -12.049, "lng": -77.030 },
+    { "id": 11, "name": "Don Pepe",            "category": "Chifa",            "cat": "chifa",     "district": "La Victoria","price": 26, "rating": 4.2, "reviews": 79,  "near": false, "img": "h-donpepe.jpg",      "address": "Av. Aviación 2210",     "tags": ["Económico","Rápido"],                                                                                  "bio": "Chifa de barrio, porciones grandes, llegas y comes.",                                                    "hours": "Lun–Dom · 12:00 – 23:30", "phone": "+51 1 472 1188", "lat": -12.078, "lng": -77.018 },
+    { "id": 12, "name": "La Pastelería",       "category": "Postres",          "cat": "postres",   "district": "Miraflores", "price": 18, "rating": 4.6, "reviews": 89,  "near": true,  "img": "h-pasteleria.jpg",   "address": "Av. Pardo 470",         "tags": ["Café","Sin gluten"],                                                                                   "bio": "Hornada diaria, recetas clásicas francesas con toque limeño.",                                           "hours": "Lun–Dom · 08:00 – 21:00", "phone": "+51 1 444 5677", "lat": -12.116, "lng": -77.030 },
+    { "id": 13, "name": "La Casa del Postre",  "category": "Postres",          "cat": "postres",   "district": "San Isidro", "price": 22, "rating": 4.5, "reviews": 67,  "near": true,  "img": "h-casapostre.jpg",   "address": "Av. Pezet 1110",        "tags": ["Para llevar","Eventos"],                    "promo": { "discount": 10, "label": "Compra mayor a S/40" }, "bio": "Tres leches, suspiro, alfajores. Lo de siempre, hecho bien.",                                            "hours": "Mar–Dom · 10:00 – 22:00", "phone": "+51 1 421 8800", "lat": -12.103, "lng": -77.043 },
+    { "id": 14, "name": "Dulces Sazón",        "category": "Postres",          "cat": "postres",   "district": "Pueblo Libre","price": 15,"rating": 4.4, "reviews": 54,  "near": false, "img": "h-dulcesazon.jpg",   "address": "Av. Bolívar 622",       "tags": ["Económico","Tradicional"],                                                                             "bio": "Dulces tradicionales: turrón, mazamorra, chapanas.",                                                     "hours": "Mar–Dom · 09:00 – 20:00", "phone": "+51 1 461 0440", "lat": -12.077, "lng": -77.063 }
   ],
   "promos": [
-    {
-      "id": 1,
-      "title": "2x1 Pollo Hoy",
-      "note": "Locales seleccionados"
-    },
-    {
-      "id": 2,
-      "title": "Menú Marino S/20",
-      "note": "Lun–Vie 12:00–16:00"
-    },
-    {
-      "id": 3,
-      "title": "Café + Brownie",
-      "note": "Solo en Aroma & Sabor"
-    },
-    {
-      "id": 4,
-      "title": "Parrillada Familiar",
-      "note": "15% en fines de semana"
-    },
-    {
-      "id": 5,
-      "title": "Postres 3x2",
-      "note": "En La Dulcería todo el mes"
-    },
-    {
-      "id": 6,
-      "title": "Descuento Criollo",
-      "note": "Platos criollos -10%"
-    }
+    { "id": 1, "huariqueId": 1,  "title": "Martes de pollo entero",   "discount": 15, "type": "descuento",  "code": "BRASA15",    "expires": "30 jun", "daysLeft": 9,  "note": "Pollo entero + papas grandes + ensalada por dos a S/68.",     "cat": "pollo",     "img": "h-brasero.jpg" },
+    { "id": 2, "huariqueId": 5,  "title": "Almuerzo marino",          "discount": 20, "type": "menú",       "code": "MARINA20",   "expires": "15 jul", "daysLeft": 14, "note": "Ceviche + arroz con mariscos + chicha morada. Lun a vie.",    "cat": "marina",    "img": "h-lamarina.jpg" },
+    { "id": 3, "huariqueId": 3,  "title": "Bife con copa",            "discount": 10, "type": "descuento",  "code": "GRILL10",    "expires": "30 jul", "daysLeft": 21, "note": "Bife de chorizo + copa de malbec a S/89.",                    "cat": "parrillas", "img": "h-puntogrill.jpg" },
+    { "id": 4, "huariqueId": 13, "title": "Tres por dos",             "discount": 33, "type": "2x1",        "code": "POSTRE3X2",  "expires": "10 jun", "daysLeft": 6,  "note": "En postres clásicos seleccionados, todo el día.",             "cat": "postres",   "img": "h-casapostre.jpg" },
+    { "id": 5, "huariqueId": 9,  "title": "Combo familiar chifa",     "discount": 18, "type": "menú",       "code": "PING18",     "expires": "25 jun", "daysLeft": 11, "note": "4 platos + sopa + arroz chaufa para compartir.",              "cat": "chifa",     "img": "h-chifaping.jpg" },
+    { "id": 6, "huariqueId": 7,  "title": "Menú criollo del día",     "discount": 12, "type": "menú",       "code": "CRIOLLO12",  "expires": "14 jul", "daysLeft": 30, "note": "Entrada + fondo + bebida + postre por S/22.",                 "cat": "criolla",   "img": "h-marytierra.jpg" }
   ],
   "reviews": [
-    {
-      "id": 2,
-      "by": "Luis P.",
-      "stars": 4,
-      "text": "Rincón Marino excelente, pero demora un poco.",
-      "status": "approved"
-    },
-    {
-      "id": 3,
-      "by": "Fernanda M.",
-      "stars": 5,
-      "text": "La Dulcería, los mejores postres del sur.",
-      "status": "approved"
-    },
-    {
-      "id": 4,
-      "by": "Miguel R.",
-      "stars": 4,
-      "text": "Fuego Criollo espectacular, carnes suaves.",
-      "status": "approved"
-    },
-    {
-      "id": 5,
-      "by": "Daniela G.",
-      "stars": 5,
-      "text": "Punto Grill es otro nivel, todo premium.",
-      "status": "approved"
-    },
-    {
-      "id": 6,
-      "by": "Julio H.",
-      "stars": 3,
-      "text": "El Brasero normalito, pero buen precio.",
-      "status": "approved"
-    },
-    {
-      "id": 7,
-      "by": "Lucía V.",
-      "stars": 4,
-      "text": "Doña Peta Criolla buen sazón, menú variado.",
-      "status": "approved"
-    },
-    {
-      "id": 8,
-      "by": "Renato F.",
-      "stars": 5,
-      "text": "Don Mario la rompe con su parrillada familiar",
-      "status": "approved"
-    },
-    {
-      "id": 9,
-      "by": "María L.",
-      "stars": 4,
-      "text": "Brasa y Carbón deliciosa, atención rápida.",
-      "status": "approved"
-    },
-    {
-      "id": 10,
-      "by": "Karen T.",
-      "stars": 5,
-      "text": "Café Central con el mejor espresso.",
-      "status": "approved"
-    }
+    { "id": 1,  "huariqueId": 1,  "author": "Camila R.", "initials": "CR", "rating": 5, "when": "hace 3 días",   "text": "El cuarto de pollo con papas fritas es la versión más limpia que he probado. La crema de ajo es adictiva. Tres generaciones se nota.", "tags": ["Familiar","Vale la espera"], "status": "approved" },
+    { "id": 2,  "huariqueId": 1,  "author": "Andrés Q.", "initials": "AQ", "rating": 4, "when": "hace 1 semana", "text": "Buen pollo, atención correcta. La salsa de huacatay le da carácter.",                                                                "tags": ["Servicio"],                  "status": "approved" },
+    { "id": 3,  "huariqueId": 1,  "author": "Marina P.", "initials": "MP", "rating": 5, "when": "hace 2 semanas","text": "Vine después de años y el sabor sigue intacto. Eso ya es noticia.",                                                                  "tags": ["Tradicional"],               "status": "approved" },
+    { "id": 4,  "huariqueId": 5,  "author": "Sofía L.",  "initials": "SL", "rating": 5, "when": "hace 5 días",   "text": "Pedí tres tipos de ceviche y todos llegaron perfectos. La leche de tigre es de otro nivel. Vista al mar de regalo.",               "tags": ["Vista al mar","Fresco"],     "status": "approved" },
+    { "id": 5,  "huariqueId": 5,  "author": "Renato M.", "initials": "RM", "rating": 5, "when": "hace 1 semana", "text": "Pisco sour delicado, no muy dulce. La causa de cangrejo vale cada sol.",                                                            "tags": ["Pisco"],                     "status": "approved" },
+    { "id": 6,  "huariqueId": 8,  "author": "Diego F.",  "initials": "DF", "rating": 4, "when": "hace 4 días",   "text": "Picantería de verdad. El rocoto relleno te despierta los sentidos.",                                                                "tags": ["Tradicional"],               "status": "approved" },
+    { "id": 7,  "huariqueId": 9,  "author": "Ana T.",    "initials": "AT", "rating": 5, "when": "hace 1 semana", "text": "El kam lu wantán es de otra época. Cantonés bien hecho.",                                                                           "tags": ["Tradicional"],               "status": "approved" },
+    { "id": 8,  "huariqueId": 12, "author": "Lucía V.",  "initials": "LV", "rating": 5, "when": "hace 2 días",   "text": "Los milhojas se deshacen al morder. Cafetería de domingo.",                                                                         "tags": ["Café"],                      "status": "approved" }
   ],
   "plans": [
-    {
-      "id": "premium",
-      "name": "Premium",
-      "price": 35
-    },
-    {
-      "id": "basic",
-      "name": "Básico",
-      "price": 0
-    },
-    {
-      "id": "exclusive",
-      "name": "Exclusive",
-      "price": 50
-    }
+    { "id": "basic",     "name": "Curioso",  "price": 0,  "yearlyPrice": 0,   "period": "siempre", "tagline": "Empieza a descubrir.",                    "popular": false, "features": ["Búsqueda y filtros básicos","Hasta 10 favoritos","Reseñas leídas","Notificaciones limitadas"] },
+    { "id": "premium",   "name": "Sibarita", "price": 24, "yearlyPrice": 228, "period": "/ mes",   "tagline": "Lo justo para comer mejor.",              "popular": true,  "features": ["Favoritos ilimitados","Reservas prioritarias","Acceso a promos exclusivas","Listas curadas mensuales","Sin anuncios"] },
+    { "id": "exclusive", "name": "Mecenas",  "price": 69, "yearlyPrice": 660, "period": "/ mes",   "tagline": "Para quien quiere acompañar la escena.",  "popular": false, "features": ["Todo lo de Sibarita","Cenas privadas con cocineros","Catas y eventos cerrados","Mesa garantizada en huariques top","Soporte personal"] }
   ],
   "subscriptions": [
-    {
-      "userId": 10,
-      "planId": "exclusive",
-      "status": "active",
-      "startDate": "2025-11-12T20:02:45.920Z",
-      "endDate": "2025-12-12T05:00:00.000Z",
-      "transactionId": "TXN-1762977765889-4moky9xzq",
-      "paymentMethod": "wallet",
-      "amount": 50,
-      "walletId": "951753852",
-      "id": 1
-    }
+    { "id": 1, "userId": 10, "planId": "exclusive", "status": "active", "startDate": "2025-11-12T20:02:45.920Z", "endDate": "2025-12-12T05:00:00.000Z", "transactionId": "TXN-1762977765889-4moky9xzq", "paymentMethod": "wallet", "amount": 50, "walletId": "951753852" }
   ],
+  "favorites": [],
   "users": [
-    {
-      "name": "luis",
-      "email": "prueba1231@gmail.com",
-      "id": 6,
-      "preferences": {
-        "cuisines": [],
-        "maxPrice": null,
-        "district": "",
-        "nearOnly": false
-      }
-    },
-    {
-      "name": "snay",
-      "email": "snay@gmail.com",
-      "id": 7,
-      "preferences": {
-        "cuisines": [],
-        "maxPrice": null,
-        "district": "",
-        "nearOnly": false
-      }
-    },
-    {
-      "name": "hola",
-      "email": "hola@gmail.com",
-      "id": 8,
-      "preferences": {
-        "cuisines": [],
-        "maxPrice": null,
-        "district": "",
-        "nearOnly": false
-      }
-    },
-    {
-      "name": "snay",
-      "email": "schneider.0104.dc@gmail.com",
-      "id": 10,
-      "preferences": {
-        "cuisines": [],
-        "maxPrice": null,
-        "district": "",
-        "nearOnly": false
-      }
-    },
-    {
-      "name": "Carlos",
-      "email": "carlos@gmail.com",
-      "id": 13,
-      "preferences": {
-        "cuisines": [],
-        "maxPrice": null,
-        "district": "",
-        "nearOnly": false
-      }
-    },
-    {
-      "name": "Manuel Tumi",
-      "email": "manueltumi@hotmail.com",
-      "id": 14,
-      "preferences": {
-        "cuisines": [
-          "Pollo"
-        ],
-        "maxPrice": 20,
-        "district": "surco",
-        "nearOnly": true
-      }
-    },
-    {
-      "name": "Ysaac",
-      "email": "ysaac123@gmail.com",
-      "id": 15,
-      "preferences": {
-        "cuisines": [
-          "Pollo"
-        ],
-        "maxPrice": 25,
-        "district": "surco",
-        "nearOnly": true
-      }
-    },
-    {
-      "name": "preferencestest",
-      "email": "preferencestest@gmail.com",
-      "id": 16,
-      "preferences": {
-        "cuisines": [
-          "Pollo"
-        ],
-        "maxPrice": 25,
-        "district": "los olivos",
-        "nearOnly": false
-      }
-    }
+    { "id": 6,  "name": "luis",            "email": "prueba1231@gmail.com",        "role": "explorer", "preferences": { "cuisines": [],        "maxPrice": null, "district": "",          "nearOnly": false } },
+    { "id": 7,  "name": "snay",            "email": "snay@gmail.com",              "role": "explorer", "preferences": { "cuisines": [],        "maxPrice": null, "district": "",          "nearOnly": false } },
+    { "id": 8,  "name": "hola",            "email": "hola@gmail.com",              "role": "explorer", "preferences": { "cuisines": [],        "maxPrice": null, "district": "",          "nearOnly": false } },
+    { "id": 10, "name": "snay",            "email": "schneider.0104.dc@gmail.com", "role": "explorer", "preferences": { "cuisines": [],        "maxPrice": null, "district": "",          "nearOnly": false } },
+    { "id": 13, "name": "Carlos",          "email": "carlos@gmail.com",            "role": "explorer", "preferences": { "cuisines": [],        "maxPrice": null, "district": "",          "nearOnly": false } },
+    { "id": 14, "name": "Manuel Tumi",     "email": "manueltumi@hotmail.com",      "role": "explorer", "preferences": { "cuisines": ["Pollo"], "maxPrice": 20,   "district": "surco",      "nearOnly": true  } },
+    { "id": 15, "name": "Ysaac",           "email": "ysaac123@gmail.com",          "role": "explorer", "preferences": { "cuisines": ["Pollo"], "maxPrice": 25,   "district": "surco",      "nearOnly": true  } },
+    { "id": 16, "name": "preferencestest", "email": "preferencestest@gmail.com",   "role": "explorer", "preferences": { "cuisines": ["Pollo"], "maxPrice": 25,   "district": "los olivos", "nearOnly": false } }
   ]
 }

@@ -1,252 +1,173 @@
 <template>
-  <section class="wrap membership-payment" aria-labelledby="title">
-    <header class="page-head">
-      <h1 id="title" class="section-title">{{ $t('payment.title') }}</h1>
-      <p class="section-sub">{{ $t('payment.subtitle') }}</p>
-    </header>
-
-    <div class="sheet pay-container">
-      <article class="card form-card pay-card">
-        <!-- Resumen del plan -->
-        <div class="card__head plan-head" v-if="selectedPlan">
-          <div class="plan-head__title">
-            <div class="price">
-              <span class="price__value">S/ {{ selectedPlan.price }}</span>
-              <span class="price__period">/ {{ billingCycleLabel }}</span>
+  <div class="page-enter">
+    <section class="section">
+      <div class="wrap">
+        <button class="btn btn--ghost btn--sm" @click="$router.push('/plans')" style="margin-bottom:24px">
+          <PfIcon name="back"/> Volver a planes
+        </button>
+        <div class="payment-grid">
+          <div>
+            <span class="eyebrow">Pago seguro</span>
+            <h1 style="font-size:clamp(36px,4vw,52px);margin-top:12px;margin-bottom:24px;line-height:1.05">
+              Confirma tu suscripción.
+            </h1>
+            <div class="payment-tabs">
+              <button v-for="t in tabs" :key="t.id" :class="{ on: tab===t.id }" @click="tab=t.id">{{ t.label }}</button>
             </div>
-            <div class="plan-name">{{ selectedPlan.name }}</div>
-          </div>
-        </div>
 
-        <!-- Métodos -->
-        <div class="method-tabs">
-          <button
-              v-for="m in paymentMethods"
-              :key="m.id"
-              type="button"
-              class="btn btn--tab"
-              :class="{ 'is-active': selectedMethod === m.id }"
-              @click="selectedMethod = m.id"
-          >
-            <span class="badge-ico" aria-hidden="true">{{ m.icon }}</span>
-            {{ m.name }}
-          </button>
-        </div>
-
-        <!-- Formulario -->
-        <form class="ps-form" @submit.prevent="handlePayment">
-          <!-- Tarjeta -->
-          <fieldset v-if="selectedMethod === 'card'" class="ps-fieldset">
-            <legend class="legend">{{ $t('payment.cardData') }}</legend>
-
-            <div class="grid-3">
-              <div class="ps-field grid-3__full">
-                <label for="card-holder">{{ $t('payment.holderName') }}</label>
-                <input
-                    id="card-holder"
-                    v-model="cardData.holderName"
-                    type="text"
-                    :placeholder="$t('payment.holderPh')"
-                    required
-                    :disabled="isProcessing"
-                />
+            <form v-if="tab==='card'" @submit.prevent="submit" style="display:grid;gap:16px">
+              <div class="card-preview">
+                <span class="eyebrow" style="color:rgba(255,255,255,.55)">PointFlavor — {{ planLabel }}</span>
+                <div class="card-preview__num">{{ number }}</div>
+                <div class="card-preview__foot">
+                  <div>
+                    <div class="card-preview__l">Titular</div>
+                    <div style="margin-top:4px;font-weight:500">{{ name }}</div>
+                  </div>
+                  <div>
+                    <div class="card-preview__l">Vence</div>
+                    <div style="margin-top:4px;font-family:var(--font-mono)">{{ expiry }}</div>
+                  </div>
+                </div>
+                <div class="card-preview__chip"/>
               </div>
-
-              <div class="ps-field grid-3__full">
-                <label for="card-number">{{ $t('payment.number') }}</label>
-                <input
-                    id="card-number"
-                    v-model="cardData.cardNumber"
-                    type="text"
-                    :placeholder="$t('payment.numberPh')"
-                    maxlength="19"
-                    required
-                    :disabled="isProcessing"
-                    @input="formatCardNumber"
-                />
+              <div>
+                <label class="field-label">Número de tarjeta</label>
+                <input class="input input--lg" v-model="number" maxlength="19"/>
               </div>
-
-              <div class="ps-field">
-                <label for="expiry-month">{{ $t('payment.month') }}</label>
-                <select id="expiry-month" v-model="cardData.expiryMonth" required :disabled="isProcessing">
-                  <option value="">{{ $t('payment.month') }}</option>
-                  <option v-for="m in 12" :key="m" :value="String(m).padStart(2, '0')">
-                    {{ String(m).padStart(2, '0') }}
-                  </option>
-                </select>
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+                <div><label class="field-label">Vencimiento</label><input class="input input--lg" v-model="expiry" maxlength="5"/></div>
+                <div><label class="field-label">CVC</label><input class="input input--lg" v-model="cvc" maxlength="4"/></div>
               </div>
-
-              <div class="ps-field">
-                <label for="expiry-year">{{ $t('payment.year') }}</label>
-                <select id="expiry-year" v-model="cardData.expiryYear" required :disabled="isProcessing">
-                  <option value="">{{ $t('payment.year') }}</option>
-                  <option v-for="y in 10" :key="y" :value="String(new Date().getFullYear() + y - 1)">
-                    {{ new Date().getFullYear() + y - 1 }}
-                  </option>
-                </select>
+              <div>
+                <label class="field-label">Nombre del titular</label>
+                <input class="input input--lg" :value="name" @input="name = $event.target.value.toUpperCase()"/>
               </div>
-
-              <div class="ps-field">
-                <label for="cvv">CVV</label>
-                <input id="cvv" v-model="cardData.cvv" type="text" placeholder="123" maxlength="4" required :disabled="isProcessing" />
-              </div>
-            </div>
-          </fieldset>
-
-          <!-- Billetera -->
-          <fieldset v-if="selectedMethod === 'wallet'" class="ps-fieldset">
-            <legend class="legend">{{ $t('payment.wallet') }}</legend>
-
-            <div class="wallet-tabs">
-              <button
-                  v-for="w in walletOptions"
-                  :key="w.id"
-                  type="button"
-                  class="btn btn--chip"
-                  :class="{ 'is-active': selectedWallet === w.id }"
-                  @click="selectedWallet = w.id"
-              >
-                {{ w.icon }} {{ w.name }}
+              <button type="submit" class="btn btn--accent btn--lg" style="margin-top:16px">
+                Confirmar pago · S/{{ price }}
               </button>
+              <p style="font-size:12px;color:var(--ink-3);text-align:center">
+                🔒 Procesado por Stripe. PointFlavor no almacena tus datos de tarjeta.
+              </p>
+            </form>
+
+            <div v-else-if="tab==='yape'" class="alt-pay">
+              <div class="alt-pay__qr"/>
+              <p style="margin-top:24px;color:var(--ink-2)">Escanea el código con la app de Yape o Plin</p>
+              <p style="font-family:var(--font-mono);font-size:22px;margin-top:8px">S/ {{ price }}.00</p>
             </div>
 
-            <div class="ps-field">
-              <label for="wallet-id">{{ $t('payment.walletIdLabel', { name: getWalletName }) }}</label>
-              <input
-                  id="wallet-id"
-                  v-model="walletData.walletId"
-                  type="text"
-                  :placeholder="$t('payment.walletIdPh')"
-                  required
-                  :disabled="isProcessing"
-              />
+            <div v-else class="alt-pay">
+              <p style="color:var(--ink-2)">Te redirigiremos a PayPal para confirmar el pago.</p>
+              <button class="btn btn--accent btn--lg" style="margin-top:24px" @click="submit">Continuar con PayPal</button>
             </div>
-          </fieldset>
+          </div>
 
-          <!-- Errores -->
-          <div class="ps-alert ps-alert--error" v-if="errorMessage">
-            <strong>{{ $t('payment.error') }}</strong>
-            <ul>
-              <li v-for="(err, i) in errorList" :key="i">{{ err }}</li>
+          <aside class="payment-summary">
+            <span class="eyebrow">Tu compra</span>
+            <h3 style="font-size:24px;margin-top:8px;margin-bottom:24px">Plan {{ planLabel }}</h3>
+            <div style="display:grid;gap:12px;font-size:14px;margin-bottom:20px">
+              <div class="row"><span>Plan</span><span>{{ planLabel }}</span></div>
+              <div class="row"><span>Facturación</span><span>{{ billing==='yearly'?'Anual':'Mensual' }}</span></div>
+              <div class="row"><span>Próximo cobro</span><span>15 de junio, 2026</span></div>
+              <div class="row"><span>Subtotal</span><span>S/ {{ price }}.00</span></div>
+              <div v-if="billing==='yearly'" class="row accent"><span>Descuento anual</span><span>-20%</span></div>
+              <div class="row"><span>Impuestos</span><span>Incluidos</span></div>
+            </div>
+            <div class="payment-summary__total">
+              <span style="font-size:15px;font-weight:500">Total hoy</span>
+              <span style="font-family:var(--font-display);font-size:32px">S/ {{ price }}</span>
+            </div>
+            <ul class="payment-summary__perks">
+              <li v-for="p in ['Cancela cuando quieras','Garantía 14 días','Soporte humano vía chat']" :key="p">
+                <PfIcon name="check" :style="{ color: 'var(--success)' }"/> {{ p }}
+              </li>
             </ul>
-          </div>
-
-          <!-- Resumen -->
-          <div class="summary">
-            <div class="summary__row">
-              <span>{{ $t('payment.amount') }}</span>
-              <strong>S/ {{ selectedPlan?.price || 0 }}</strong>
-            </div>
-            <div class="summary__row">
-              <span>{{ $t('payment.cycle') }}</span>
-              <strong>{{ billingCycleLabel }}</strong>
-            </div>
-            <div class="summary__total">
-              <span>{{ $t('payment.total') }}</span>
-              <strong>S/ {{ selectedPlan?.price || 0 }}</strong>
-            </div>
-          </div>
-
-          <button class="btn btn--primary btn--full pay-action" type="submit" :disabled="isProcessing">
-            {{ isProcessing ? $t('payment.processing') : $t('payment.payAmount', { amount: selectedPlan?.price || 0 }) }}
-          </button>
-        </form>
-
-        <!-- Éxito -->
-        <div class="ps-success" v-if="paymentSuccessful">
-          <div class="success-ico" aria-hidden="true">✓</div>
-          <h3>{{ $t('payment.success') }}</h3>
-          <p>{{ $t('payment.activated') }}</p>
-          <div class="receipt" v-if="receipt">
-            <p><strong>{{ $t('payment.txId') }}:</strong> {{ receipt.transactionId }}</p>
-            <p><strong>{{ $t('payment.amount') }}:</strong> S/ {{ receipt.amount }}</p>
-            <p><strong>{{ $t('payment.plan') }}:</strong> {{ receipt.planName }}</p>
-          </div>
-          <router-link class="btn btn--ghost" :to="{ name: 'plans' }">{{ $t('payment.back') }}</router-link>
+          </aside>
         </div>
-      </article>
-    </div>
-  </section>
+      </div>
+    </section>
+  </div>
 </template>
-
 <script>
-import { processMembershipPaymentUseCase } from '@/memberships/application/process-membership-payment.usecase.js';
-import { listPlansQuery } from '@/memberships/application/list-plan.query.js';
-
-// Si tienes getSession(), úsalo. Si no, este fallback no rompe.
-function getSession() {
-  try { return JSON.parse(localStorage.getItem('ps-session') || localStorage.getItem('ps-user') || '{}'); }
-  catch { return {}; }
-}
-
+import PfIcon from '@/shared/presentations/components/pf-icon.vue';
 export default {
-  name: 'MembershipPayment',
-  data() {
-    return {
-      selectedPlan: null,
-      selectedMethod: 'card',
-      selectedWallet: 'yape',
-      billingCycle: 'monthly',
-      isProcessing: false,
-      paymentSuccessful: false,
-      errorMessage: '',
-      errorList: [],
-      receipt: null,
-      cardData: { holderName: '', cardNumber: '', expiryMonth: '', expiryYear: '', cvv: '' },
-      walletData: { walletId: '' },
-      paymentMethods: [
-        { id: 'card', name: this.$t('payment.card'), icon: '💳' },
-        { id: 'wallet', name: this.$t('payment.wallet'), icon: '📱' }
-      ],
-      walletOptions: [
-        { id: 'yape', name: 'Yape', icon: '🟢' },
-        { id: 'plin', name: 'Plin', icon: '🔵' }
-      ]
-    };
-  },
+  name: 'PaymentView',
+  components: { PfIcon },
+  data: () => ({
+    tab: 'card',
+    number: '4242 4242 4242 4242',
+    expiry: '12/27', cvc: '123',
+    name: 'CAMILA TORRES',
+    tabs: [{id:'card',label:'Tarjeta'},{id:'yape',label:'Yape / Plin'},{id:'paypal',label:'PayPal'}]
+  }),
   computed: {
-    billingCycleLabel() {
-      const m = { monthly: this.$t('payment.monthly'), quarterly: this.$t('payment.quarterly'), annual: this.$t('payment.annual') };
-      return m[this.billingCycle] || m.monthly;
-    },
-    getWalletName() {
-      const w = this.walletOptions.find(x => x.id === this.selectedWallet);
-      return w?.name || this.$t('payment.wallet');
+    planId() { return this.$route.params.planId; },
+    billing() { return this.$route.query.billing || 'monthly'; },
+    planLabel() { return this.planId === 'foodie' ? 'Foodie Pro' : 'Sibarita'; },
+    price() {
+      if (this.planId === 'foodie') return this.billing === 'yearly' ? 39 : 49;
+      return this.billing === 'yearly' ? 19 : 24;
     }
   },
-  async mounted() {
-    const planId = this.$route.query?.planId || this.$route.params?.plan?.id;
-    const plans = await listPlansQuery().catch(() => []);
-    const found = (plans || []).find(p => String(p.id).toLowerCase() === String(planId).toLowerCase());
-    this.selectedPlan = found || this.$route.params.plan || { id: 'basic', name: 'Básico', price: 0, description: '' };
-  },
-  methods: {
-    formatCardNumber(e) {
-      const value = e.target.value.replace(/\s/g, '');
-      this.cardData.cardNumber = value.match(/.{1,4}/g)?.join(' ') || value;
-    },
-    async handlePayment() {
-      this.errorMessage = ''; this.errorList = []; this.isProcessing = true;
-      try {
-        const userId = getSession()?.id || 'anonymous';
-        const payload = {
-          method: this.selectedMethod,
-          amount: Number(this.selectedPlan?.price || 0),
-          planId: this.selectedPlan?.id,
-          planName: this.selectedPlan?.name,
-          billingCycle: this.billingCycle,
-          ...(this.selectedMethod === 'card' ? this.cardData : this.walletData)
-        };
-        const result = await processMembershipPaymentUseCase(payload, userId);
-        if (result.success) { this.paymentSuccessful = true; this.receipt = result.receipt; }
-        else { this.errorMessage = result.message || this.$t('payment.error'); this.errorList = result.errors || []; }
-      } catch (err) {
-        this.errorMessage = err?.message || this.$t('payment.errorGeneric');
-      } finally {
-        this.isProcessing = false;
-      }
-    }
-  }
+  methods: { submit() { this.$router.push('/'); } }
 };
 </script>
+<style scoped>
+.payment-grid { display:grid; grid-template-columns: 1.4fr 1fr; gap: 56px; align-items: start; }
+.payment-tabs {
+  display:flex; gap:6px; margin-bottom: 24px; padding: 4px;
+  background: var(--bg-soft); border-radius: var(--r-md); width: fit-content;
+}
+.payment-tabs button {
+  padding: 8px 14px; border: none; border-radius: var(--r-sm);
+  background: transparent; font-size: 13px; font-weight: 500; cursor: pointer;
+}
+.payment-tabs button.on { background: var(--bg-elev); box-shadow: var(--shadow-sm); }
 
+.card-preview {
+  padding: 24px; border-radius: var(--r-lg);
+  background: linear-gradient(135deg, var(--ink), oklch(0.30 0.02 70));
+  color: #fff; min-height: 200px; position: relative; overflow: hidden;
+  box-shadow: var(--shadow-lg);
+}
+.card-preview__num { font-family: var(--font-mono); font-size: 22px; letter-spacing: 0.1em; margin-top: 32px; margin-bottom: 24px; }
+.card-preview__foot { display:flex; justify-content: space-between; font-size: 13px; }
+.card-preview__l { font-size:10px; color: rgba(255,255,255,.5); font-family: var(--font-mono); text-transform: uppercase; letter-spacing: 0.08em; }
+.card-preview__chip {
+  position: absolute; top: 24px; right: 24px;
+  width: 36px; height: 24px; border-radius: 4px;
+  background: linear-gradient(135deg, #f9b234, #f55249);
+}
+
+.alt-pay { text-align:center; padding: 40px; border-radius: var(--r-lg); border: 1px solid var(--line-soft); }
+.alt-pay__qr {
+  width: 200px; height: 200px; margin-inline: auto;
+  background: #fff; border: 1px solid var(--line); border-radius: var(--r-md);
+  background-image:
+    linear-gradient(45deg, var(--ink) 25%, transparent 25%),
+    linear-gradient(-45deg, var(--ink) 25%, transparent 25%),
+    linear-gradient(45deg, transparent 75%, var(--ink) 75%),
+    linear-gradient(-45deg, transparent 75%, var(--ink) 75%);
+  background-size: 12px 12px;
+  background-position: 0 0, 0 6px, 6px -6px, -6px 0;
+}
+
+.payment-summary {
+  position: sticky; top: 96px;
+  padding: 28px; border-radius: var(--r-xl);
+  background: var(--bg-soft); border: 1px solid var(--line-soft);
+}
+.payment-summary .row { display:flex; justify-content: space-between; }
+.payment-summary .row > span:first-child { color: var(--ink-3); }
+.payment-summary .row > span:last-child { font-weight: 500; }
+.payment-summary .row.accent > span:last-child { color: var(--accent); }
+.payment-summary__total { display:flex; justify-content:space-between; align-items:baseline; padding-top: 16px; border-top: 1px solid var(--line); }
+.payment-summary__perks { list-style:none; padding:0; margin: 24px 0 0; display:grid; gap:10px; }
+.payment-summary__perks li { display:flex; gap:8px; align-items:center; font-size:13px; color: var(--ink-2); }
+
+@media (max-width: 960px) {
+  .payment-grid { grid-template-columns: 1fr; }
+  .payment-summary { position: static; }
+}
+</style>

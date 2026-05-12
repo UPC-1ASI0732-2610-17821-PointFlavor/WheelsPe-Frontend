@@ -5,6 +5,10 @@ export const DiscoveryRepository = {
         return api('/categories');
     },
 
+    listHuariques() {
+        return api('/huariques');
+    },
+
     search(q) {
         const query = typeof q === 'string' ? encodeURIComponent(q) : '';
         return api(`/huariques?q=${query}`);
@@ -14,33 +18,26 @@ export const DiscoveryRepository = {
         return api('/huariques?near=true');
     },
 
-    getHuariqueById(id) {
+    getById(id) {
         return api(`/huariques/${id}`);
     },
 
-    /**
-     * Crea un huarique
-     * @param {{name:string, categoryId:string, address:string, phone?:string, imgUrl?:string, description?:string}} dto
-     */
-    createHuarique(dto) {
+    listByCategory(cat) {
+        return api(`/huariques?cat=${encodeURIComponent(cat)}`);
+    },
+
+    create(dto) {
         const now = new Date().toISOString();
         return api('/huariques', {
             method: 'POST',
-            json: { ...dto, createdAt: now, updatedAt: now }
+            body: JSON.stringify({ ...dto, createdAt: now, updatedAt: now })
         });
     },
 
-    /**
-     * Actualiza campos de un huarique
-     * @param {number|string} id
-     * @param {Partial<{name:string, categoryId:string, address:string, phone:string, imgUrl:string, description:string}>} dto
-     */
-    updateHuarique(id, dto) {
+    update(id, dto) {
         return api(`/huariques/${id}`, {
             method: 'PATCH',
-            json: { ...dto, updatedAt: new Date().toISOString() }
+            body: JSON.stringify({ ...dto, updatedAt: new Date().toISOString() })
         });
     }
 };
-
-

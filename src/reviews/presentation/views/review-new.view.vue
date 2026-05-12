@@ -1,179 +1,121 @@
 <template>
-  <section class="revnew">
-    <h1 class="revnew__title">{{ t('reviews.new.title') }}</h1>
+  <div class="page-enter">
+    <section class="section">
+      <div class="wrap-narrow">
+        <button class="btn btn--ghost btn--sm" @click="goBack" style="margin-bottom:24px">
+          <PfIcon name="back"/> Volver al lugar
+        </button>
 
-    <ps-card>
-      <template #header>
-        <div class="revnew__head">
-          <h2 class="revnew__subtitle">{{ t('reviews.new.subtitle') }}</h2>
-
-          <!-- Huarique destino -->
-          <div v-if="huarique" class="revnew__target" aria-live="polite">
-            <div class="revnew__avatar" :title="huarique.name">
-              <img v-if="huarique.img" :src="huarique.img" :alt="huarique.name" @error="imgError" />
-              <span v-else>{{ initials(huarique.name) }}</span>
-            </div>
-
-            <!-- Nombre + meta con separación correcta -->
-            <div class="revnew__info">
-              <strong class="revnew__name">{{ huarique.name }}</strong>
-              <small class="revnew__meta">{{ huarique.district }}</small>
-              <small class="revnew__meta">{{ huarique.category }}</small>
-            </div>
+        <article class="review-target">
+          <div class="review-target__img"><PfSmartImg :src="h.img" :alt="h.name"/></div>
+          <div>
+            <span class="eyebrow">{{ h.category }} · {{ h.district }}</span>
+            <h2 style="font-size:26px;margin-top:4px">{{ h.name }}</h2>
+            <p style="font-size:14px;color:var(--ink-2);margin-top:4px">
+              Cuéntanos cómo te fue. Tu reseña ayuda a otros comensales.
+            </p>
           </div>
-        </div>
-      </template>
+        </article>
 
-      <review-form
-          v-if="ready"
-          :huarique-id="huariqueId"
-          :user-id="sessionUserId"
-          @created="handleCreated"
-      />
-      <div v-else class="revnew__loading">...</div>
-    </ps-card>
-  </section>
+        <form @submit.prevent="submit" style="display:grid;gap:32px">
+          <section class="pref-block">
+            <div class="pref-block__head"><div><h3 style="font-size:24px">Tu calificación</h3><p>Cinco estrellas si es para repetir.</p></div></div>
+            <div style="display:flex;gap:10px">
+              <button v-for="n in 5" :key="n" type="button"
+                class="star-btn"
+                :class="{ on: (hover || rating) >= n }"
+                @mouseenter="hover = n" @mouseleave="hover = 0" @click="rating = n">
+                <PfIcon name="star" :size="24"/>
+              </button>
+            </div>
+            <p v-if="rating > 0" style="margin-top:12px;font-size:14px;color:var(--ink-2)">
+              {{ ratingLabel }}
+            </p>
+          </section>
+
+          <section class="pref-block">
+            <div class="pref-block__head">
+              <div><h3 style="font-size:24px">Tu reseña</h3></div>
+              <span style="font-size:12px;color:var(--ink-3);font-family:var(--font-mono)">{{ text.length }} / 500</span>
+            </div>
+            <textarea class="textarea" v-model="text" :maxlength="500" rows="6"
+              placeholder="¿Qué probaste? ¿Cómo fue el servicio? ¿Volverías?"
+              style="resize:vertical"/>
+          </section>
+
+          <section class="pref-block">
+            <div class="pref-block__head"><div><h3 style="font-size:24px">Etiquetas</h3><p>Hasta 3.</p></div></div>
+            <div style="display:flex;gap:8px;flex-wrap:wrap">
+              <button v-for="t in tagOptions" :key="t" type="button"
+                :class="['chip', tags.includes(t) && 'chip--on']" @click="toggleTag(t)">
+                <PfIcon v-if="tags.includes(t)" name="check"/> {{ t }}
+              </button>
+            </div>
+          </section>
+
+          <section class="pref-block">
+            <div class="pref-block__head"><div><h3 style="font-size:24px">¿Subir fotos?</h3><p>Opcional, pero ayuda mucho.</p></div></div>
+            <div class="photo-uploads">
+              <div v-for="i in 4" :key="i" class="placeholder" style="aspect-ratio:1/1;border-radius:var(--r-md);cursor:pointer">
+                <PfIcon name="plus"/>
+              </div>
+            </div>
+          </section>
+
+          <div style="display:flex;gap:12px;padding-top:16px;border-top:1px solid var(--line-soft)">
+            <button type="submit" class="btn btn--accent btn--lg" :disabled="!rating || text.length < 20">
+              Publicar reseña
+            </button>
+            <button type="button" class="btn btn--ghost btn--lg" @click="goBack">Cancelar</button>
+            <span style="margin-left:auto;align-self:center;font-size:13px;color:var(--ink-3)">Mínimo 20 caracteres</span>
+          </div>
+        </form>
+      </div>
+    </section>
+  </div>
 </template>
+<script>
+import PfIcon from '@/shared/presentations/components/pf-icon.vue';
+import PfSmartImg from '@/shared/presentations/components/pf-smart-img.vue';
+import { findHuarique } from '@/shared/data/mock-data.js';
 
-<script setup>
-import { ref, computed, onMounted, watch } from 'vue';
-import { useRoute, useRouter, onBeforeRouteUpdate } from 'vue-router';
-import { useI18n } from 'vue-i18n';
-import PsCard from '@/shared/presentations/components/ui/ps-card.vue';
-import ReviewForm from '@/reviews/presentation/components/review-form.vue';
-import { getSession } from '@/auth/application/get-session.query.js';
-import { api } from '@/shared/infrastructure/base-api';
-
-const { t } = useI18n();
-const route = useRoute();
-const router = useRouter();
-
-const huariqueId = computed(() => Number(route.params.huariqueId));
-const sessionUserId = ref(0);
-const ready = ref(false);
-const huarique = ref(null);
-
-// Carga robusta: si por alguna razón /huariques/:id fuera mapeado a colección,
-// usamos también /huariques?id=ID y resolvemos el item exacto.
-async function loadHuarique(id) {
-  const num = Number(id);
-
-  try {
-    // 1) intenta item directo
-    let h = await api(`/huariques/${num}`);
-
-    // si por mapa termina siendo array, o por seguridad, busca el id
-    if (Array.isArray(h)) {
-      h = h.find(x => Number(x?.id) === num) ?? h[0] ?? null;
-    }
-    // 2) si sigue fallando o vino null, intenta con query
-    if (!h) {
-      const arr = await api(`/huariques?id=${num}`);
-      h = Array.isArray(arr) ? arr.find(x => Number(x?.id) === num) ?? arr[0] ?? null : arr;
-    }
-    huarique.value = h || null;
-  } catch {
-    huarique.value = null;
+export default {
+  name: 'ReviewNewView',
+  components: { PfIcon, PfSmartImg },
+  data: () => ({
+    rating: 0, hover: 0, text: '', tags: [],
+    tagOptions: ['Familiar','Romántico','Vale la espera','Tradicional','Buen servicio','Para llevar','Generoso']
+  }),
+  computed: {
+    h() { return findHuarique(this.$route.params.huariqueId); },
+    ratingLabel() { return ['','Mejorable','Aceptable','Bien','Muy bien','Excelente'][this.rating]; }
+  },
+  methods: {
+    toggleTag(t) {
+      const i = this.tags.indexOf(t);
+      if (i >= 0) this.tags.splice(i, 1);
+      else if (this.tags.length < 3) this.tags.push(t);
+    },
+    submit() { this.$router.push({ name: 'huarique-detail', params: { id: this.h.id } }); },
+    goBack() { this.$router.push({ name: 'huarique-detail', params: { id: this.h.id } }); }
   }
-}
-
-async function loadSession() {
-  try {
-    const session = getSession();
-    sessionUserId.value = Number(session?.id ?? 0);
-  } catch {
-    sessionUserId.value = 0;
-  }
-}
-
-onMounted(async () => {
-  await Promise.all([loadSession(), loadHuarique(huariqueId.value)]);
-  ready.value = true;
-});
-
-watch(huariqueId, async (id) => {
-  await loadHuarique(id);
-});
-
-onBeforeRouteUpdate(async (to) => {
-  if (to.params.huariqueId !== route.params.huariqueId) {
-    await loadHuarique(to.params.huariqueId);
-  }
-});
-
-function handleCreated() {
-  router.push({ name: 'reviews', params: { huariqueId: huariqueId.value } });
-}
-
-function imgError(e) {
-  e.target.style.display = 'none';
-}
-
-function initials(name = '') {
-  const parts = name.trim().split(/\s+/).slice(0, 2);
-  return parts.map(p => p[0]?.toUpperCase() ?? '').join('');
-}
+};
 </script>
-
-
 <style scoped>
-:root { --ps-brown:#5B3010; --ps-gold:#E7A33E; --ps-cream:#FFF8E6; }
-
-.revnew {
-  max-width: 960px;
-  margin: 1.75rem auto 2.25rem;
-  padding: 0 1rem;
+.review-target {
+  display:flex; gap:18px; padding:18px; margin-bottom: 32px;
+  border:1px solid var(--line-soft); border-radius: var(--r-lg);
+  background: var(--bg-soft);
 }
-.revnew__title {
-  color: var(--ps-brown);
-  font-size: 2.15rem;
-  font-weight: 800;
-  letter-spacing: .2px;
-  margin: .35rem 0 1.25rem;
+.review-target__img { width:96px; height:96px; border-radius: var(--r-md); overflow:hidden; flex-shrink:0; }
+.pref-block__head { display:flex; justify-content:space-between; align-items:baseline; margin-bottom: 16px; }
+.pref-block__head p { color: var(--ink-3); font-size: 14px; margin-top: 4px; }
+.star-btn {
+  width:56px; height:56px; border-radius: var(--r-md);
+  border:1px solid var(--line); background: var(--bg-elev);
+  cursor:pointer; display:grid; place-items:center;
+  color: var(--ink-3); transition: all .15s ease;
 }
-.revnew :deep(.ps-card) {
-  padding: 1.25rem 1.25rem 1rem;
-  border: 1px solid #0000;
-}
-.revnew :deep(.ps-card__header){
-  margin-bottom: .75rem;
-}
-.revnew__subtitle {
-  color: var(--ps-brown);
-  font-size: 1.125rem;
-  font-weight: 700;
-  margin: 0;
-}
-
-.revnew__head{
-  display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;
-}
-.revnew__target {
-  display: inline-flex; align-items: center; gap: .65rem;
-  padding: .5rem .75rem; background: var(--ps-cream);
-  border: 1px solid color-mix(in srgb, var(--ps-gold) 35%, transparent);
-  border-radius: 999px;
-}
-.revnew__avatar { width: 40px; height: 40px; border-radius: 999px;
-  overflow: hidden; display: grid; place-items: center;
-  background: color-mix(in srgb, var(--ps-gold) 25%, white);
-  color: var(--ps-brown); font-weight: 700;
-}
-.revnew__avatar img{ width:100%; height:100%; object-fit:cover; display:block; }
-
-/* separación limpia entre nombre, distrito y categoría */
-.revnew__info{
-  display:inline-flex;
-  align-items: baseline;
-  gap:.5rem;
-}
-.revnew__name { color: var(--ps-brown); font-weight: 700; }
-.revnew__meta { color: #8b6a4c; position: relative; }
-.revnew__meta + .revnew__meta::before {
-  content: "•";
-  margin: 0 .25rem 0 .15rem;
-  color: #c19a6b;
-}
-
-.revnew__loading { color:#9ca3af; font-size:.95rem; }
+.star-btn.on { color: var(--accent); }
+.photo-uploads { display:grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
 </style>

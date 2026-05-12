@@ -4,8 +4,12 @@
   "/huariques/:id": "/huariques/:id",
   "/promos": "/promos",
   "/reviews": "/reviews",
+  "/reviews/:id": "/reviews/:id",
   "/plans": "/plans",
   "/subscriptions": "/subscriptions",
   "/subscriptions/:id": "/subscriptions/:id",
-  "/users": "/users"
+  "/users": "/users",
+  "/users/:id": "/users/:id",
+  "/favorites": "/favorites",
+  "/favorites/:id": "/favorites/:id"
 }

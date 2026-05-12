@@ -1,110 +1,90 @@
 <template>
-  <section class="role wrap" aria-labelledby="title">
-    <div class="panel" role="region" aria-describedby="subtitle">
-      <header class="head">
-        <h1 id="title" class="title">{{ $t('roleSelect.title') }}</h1>
-        <p id="subtitle" class="subtitle">{{ $t('roleSelect.subtitle') }}</p>
-      </header>
-
-      <div
-          class="roles"
-          role="radiogroup"
-          :aria-label="$t('roleSelect.radiogroupLabel')"
-          @keydown.left.prevent="focusPrev()"
-          @keydown.right.prevent="focusNext()"
-          @keydown.space.prevent="activateFocused()"
-          @keydown.enter.prevent="activateFocused()"
-      >
-        <button
-            ref="opt0"
-            class="role-card"
-            :class="{ active: role==='explorer', 'is-selected': role==='explorer' }"
-            role="radio"
-            :aria-checked="role==='explorer'"
-            :aria-label="$t('roleSelect.explorerAria')"
-            @click="setRole('explorer')"
-        >
-          <span class="icon" aria-hidden="true">
-            <svg viewBox="0 0 24 24">
-              <path d="M12 21s7-5.1 7-11a7 7 0 1 0-14 0c0 5.9 7 11 7 11Z" />
-              <circle cx="12" cy="10" r="2.7"/>
-            </svg>
-          </span>
-          <span class="role-title">{{ $t('roleSelect.explorerTitle') }}</span>
-          <span class="role-desc">{{ $t('roleSelect.explorerDesc') }}</span>
-        </button>
-
-        <button
-            ref="opt1"
-            class="role-card"
-            :class="{ active: role==='owner', 'is-selected': role==='owner' }"
-            role="radio"
-            :aria-checked="role==='owner'"
-            :aria-label="$t('roleSelect.ownerAria')"
-            @click="setRole('owner')"
-        >
-          <span class="icon" aria-hidden="true">
-            <svg viewBox="0 0 24 24">
-              <path d="M3 9h18l-2-4H5l-2 4Z" />
-              <path d="M5 9v10h14V9" />
-              <path d="M9 19v-6h6v6" />
-            </svg>
-          </span>
-          <span class="role-title">{{ $t('roleSelect.ownerTitle') }}</span>
-          <span class="role-desc">{{ $t('roleSelect.ownerDesc') }}</span>
-        </button>
+  <div class="page-enter">
+    <section class="section">
+      <div class="wrap-narrow">
+        <div style="text-align:center;margin-bottom:56px">
+          <span class="eyebrow">Paso 2 de 2</span>
+          <h1 style="font-size:clamp(40px,5vw,64px);margin-top:16px;line-height:1.05">
+            ¿Cómo vas a usar PointFlavor?
+          </h1>
+          <p style="color:var(--ink-2);font-size:16px;margin-top:16px;max-width:480px;margin-inline:auto">
+            Podrás cambiar esto después. Solo nos ayuda a personalizar tu experiencia.
+          </p>
+        </div>
+        <div class="role-grid">
+          <button v-for="r in roles" :key="r.id" :class="['role-card', role===r.id && 'on']" @click="role=r.id">
+            <div class="role-card__head">
+              <span class="eyebrow" :style="{ color: role===r.id ? 'rgba(255,255,255,.65)' : undefined }">{{ r.label }}</span>
+              <span class="role-card__check" :class="{ on: role===r.id }"><PfIcon v-if="role===r.id" name="check"/></span>
+            </div>
+            <h3 :style="{ fontSize:'28px', lineHeight:1.15, color: role===r.id ? '#fff' : 'var(--ink)' }">{{ r.title }}</h3>
+            <p :style="{ color: role===r.id ? 'rgba(255,255,255,.7)' : 'var(--ink-2)', fontSize:'15px', marginTop:'12px', marginBottom:'24px' }">{{ r.desc }}</p>
+            <ul class="role-card__perks">
+              <li v-for="p in r.perks" :key="p" :style="{ color: role===r.id ? 'rgba(255,255,255,.85)' : 'var(--ink-2)' }">
+                <PfIcon name="check" :style="{ color: role===r.id ? '#fff' : 'var(--accent)' }"/>
+                {{ p }}
+              </li>
+            </ul>
+          </button>
+        </div>
+        <div style="display:flex;gap:12px;justify-content:center">
+          <button class="btn btn--ghost" @click="$router.push('/')">Saltar por ahora</button>
+          <button class="btn btn--accent" @click="continueWith">
+            Continuar como {{ role === 'user' ? 'comensal' : 'dueño' }}
+          </button>
+        </div>
       </div>
-
-      <div class="actions">
-        <button class="btn" :disabled="!role" @click="save">
-          {{ $t('roleSelect.continue') }}
-        </button>
-      </div>
-    </div>
-  </section>
+    </section>
+  </div>
 </template>
-
 <script>
+import PfIcon from '@/shared/presentations/components/pf-icon.vue';
+import { getSession, setSession } from '@/auth/application/get-session.query.js';
+
 export default {
   name: 'RoleSelectView',
-  data: () => ({ role: null, focusIdx: 0 }),
-  mounted() {
-    const persistedRole = localStorage.getItem('ps-role');
-    if (persistedRole) this.role = persistedRole;
-  },
+  components: { PfIcon },
+  data: () => ({
+    role: 'user',
+    roles: [
+      { id:'user', label:'Como comensal', title:'Quiero descubrir lugares.',
+        desc:'Buscar, guardar favoritos, ver reseñas, conseguir promos.',
+        perks:['Acceso a +1.800 huariques','Reseñas de la comunidad','Listas curadas mensuales'] },
+      { id:'owner', label:'Como dueño', title:'Tengo un lugar para registrar.',
+        desc:'Publica tu local, gestiona promociones y responde reseñas.',
+        perks:['Página de tu negocio','Crea promociones','Estadísticas de visitas'] },
+    ]
+  }),
   methods: {
-    setRole(r){ this.role = r; },
-    focusPrev(){
-      this.focusIdx = this.focusIdx === 0 ? 1 : 0;
-      this.$refs[`opt${this.focusIdx}`]?.focus();
-    },
-    focusNext(){
-      this.focusIdx = this.focusIdx === 0 ? 1 : 0;
-      this.$refs[`opt${this.focusIdx}`]?.focus();
-    },
-    activateFocused(){
-      this.setRole(this.focusIdx === 0 ? 'explorer' : 'owner');
-    },
-    save(){
-      localStorage.setItem('ps-role', this.role);
-      try{
-        const prev = JSON.parse(localStorage.getItem('ps-session') || '{}');
-        const session = { ...prev, role: this.role };
-        localStorage.setItem('ps-session', JSON.stringify(session));
-
-
-        window.dispatchEvent(new Event('ps-session-updated'));
-      }catch{
-        localStorage.setItem('ps-session', JSON.stringify({ role: this.role }));
-        window.dispatchEvent(new Event('ps-session-updated'));
+    continueWith() {
+      const s = getSession();
+      if (s && typeof setSession === 'function') {
+        setSession({ ...s, role: this.role === 'owner' ? 'owner' : 'explorer' });
+        window.dispatchEvent(new CustomEvent('ps-session-updated'));
       }
-
-      setTimeout(() => {
-        this.$router.push(this.role === 'owner'
-            ? { name:'owner-huarique-new' }
-            : { name:'home' });
-      }, 100);
+      this.$router.push('/');
     }
   }
 };
 </script>
+<style scoped>
+.role-grid { display:grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 32px; }
+.role-card {
+  text-align: left; cursor:pointer;
+  padding: 32px; border-radius: var(--r-xl);
+  background: var(--bg-elev); color: var(--ink);
+  border: 1px solid var(--line); transition: all .2s ease;
+  box-shadow: var(--shadow-sm);
+}
+.role-card.on { background: var(--ink); color: var(--ink-inv); border-color: var(--ink); box-shadow: var(--shadow-lg); }
+.role-card__head { display:flex; justify-content:space-between; align-items:center; margin-bottom: 24px; }
+.role-card__check {
+  width:22px; height:22px; border-radius:50%;
+  border:1px solid var(--line); display:grid; place-items:center;
+  background: transparent; color: transparent;
+}
+.role-card__check.on { background: #fff; color: var(--ink); border-color: rgba(255,255,255,.4); }
+.role-card__perks { list-style:none; padding:0; margin:0; display:grid; gap:8px; }
+.role-card__perks li { display:flex; gap:10px; align-items:center; font-size:14px; }
+@media (max-width: 720px) { .role-grid { grid-template-columns: 1fr; } }
+</style>

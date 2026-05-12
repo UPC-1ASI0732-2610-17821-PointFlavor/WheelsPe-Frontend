@@ -1,11 +1,18 @@
 export default [
-    { path: '/categories', component: () => import('./views/categories.view.vue') },
-    { path: '/results', component: () => import('./views/results.view.vue') },
-    { path: '/map', component: () => import('./views/map.view.vue') },
+    { path: '/categories', name: 'categories', component: () => import('./views/categories.view.vue') },
+    { path: '/results', name: 'results', component: () => import('./views/results.view.vue') },
+    { path: '/map', name: 'map', component: () => import('./views/map.view.vue') },
+    {
+        path: '/huariques/:id',
+        name: 'huarique-detail',
+        component: () => import('./views/huarique-detail.view.vue'),
+        meta: { title: 'Huarique' }
+    },
     {
         path: '/favorites',
+        name: 'favorites',
         component: () => import('./views/favorites.view.vue'),
-        meta: { requiresAuth: true, title: 'Mis favoritos' }
+        meta: { title: 'Mis favoritos' }
     },
 
     {

@@ -1,106 +1,75 @@
 <template>
-  <section class="register wrap" aria-labelledby="title">
-    <div class="panel">
-      <div class="left">
-        <h1 id="title" class="title">{{ $t('register.title') }}</h1>
-
-        <form class="form" @submit.prevent="onSubmit" novalidate>
-          <label class="field">
-            <span class="field__icon" aria-hidden="true">
-              <svg viewBox="0 0 24 24">
-                <path d="M4 20a8 8 0 0 1 16 0" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
-                <circle cx="12" cy="8" r="4" stroke-width="1.8"/>
-              </svg>
-            </span>
-            <input
-                v-model.trim="name"
-                class="input"
-                type="text"
-                inputmode="text"
-                autocomplete="name"
-                :placeholder="$t('register.namePlaceholder')"
-                :aria-label="$t('register.nameAria')"
-                required
-            />
-          </label>
-
-          <label class="field">
-            <span class="field__icon" aria-hidden="true">
-              <svg viewBox="0 0 24 24">
-                <path d="m3 7 9 6 9-6" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
-                <rect x="3" y="7" width="18" height="14" rx="2.5" stroke-width="1.8"/>
-              </svg>
-            </span>
-            <input
-                v-model.trim="email"
-                class="input"
-                type="email"
-                inputmode="email"
-                autocomplete="email"
-                :placeholder="$t('register.emailPlaceholder')"
-                :aria-label="$t('register.emailAria')"
-                required
-            />
-          </label>
-
-          <button class="btn" type="submit" :disabled="!canSend || sending">
-            <span v-if="!sending">{{ $t('register.submit') }}</span>
-            <span v-else>{{ $t('register.submitting') }}</span>
-          </button>
-        </form>
-
-        <transition name="toast">
-          <p v-if="msg" class="toast">{{ msg }}</p>
-        </transition>
-      </div>
-
-      <aside class="right" aria-hidden="true">
-        <div class="right__inner">
-          <h2 class="hello">{{ $t('register.helloRight') }}</h2>
-          <p class="sub">
-            {{ $t('register.subRight') }}
-          </p>
+  <div class="page-enter">
+    <AuthLayout
+      subtitle="Únete"
+      title="Tu próxima comida memorable empieza aquí."
+      aside-title="No es una app de delivery. Es un mapa de cocinas con alma."
+      aside-text="Te tomará menos de un minuto. Sin spam, sin promesas vacías."
+      :aside-img="asideImg">
+      <form @submit.prevent="submit" style="display:grid;gap:14px">
+        <div>
+          <label class="field-label">Nombre</label>
+          <input class="input input--lg" v-model="name" placeholder="¿Cómo te llamas?"/>
         </div>
-      </aside>
-    </div>
-  </section>
+        <div>
+          <label class="field-label">Correo</label>
+          <input class="input input--lg" type="email" v-model="email" placeholder="tu@correo.com" required/>
+        </div>
+        <div>
+          <label class="field-label">Contraseña</label>
+          <input class="input input--lg" type="password" v-model="pass" placeholder="Mínimo 8 caracteres" required/>
+          <div class="pwd-bar"><div :style="{ width: Math.min(pass.length * 12, 100) + '%' }"/></div>
+        </div>
+        <label style="display:flex;gap:10px;align-items:flex-start;font-size:13px;color:var(--ink-2);margin-top:4px">
+          <input type="checkbox" v-model="accept" style="accent-color:var(--accent);margin-top:3px"/>
+          Acepto los términos y la política de privacidad. Quiero recibir el newsletter mensual con curaduría.
+        </label>
+        <p v-if="error" style="color:var(--danger);font-size:13px">{{ error }}</p>
+        <button type="submit" class="btn btn--accent btn--lg" style="width:100%;margin-top:8px"
+          :disabled="!email || !pass || !accept || busy">
+          {{ busy ? 'Creando…' : 'Crear cuenta' }}
+        </button>
+        <p style="font-size:14px;color:var(--ink-2);text-align:center;margin-top:12px">
+          ¿Ya tienes cuenta?
+          <RouterLink to="/auth" style="color:var(--accent);font-weight:500">Ingresar</RouterLink>
+        </p>
+      </form>
+    </AuthLayout>
+  </div>
 </template>
-
 <script>
-import { registerUseCase } from '../../application/register.usecase.js';
+import AuthLayout from '../components/auth-layout.vue';
+import { registerUseCase } from '@/auth/application/register.usecase.js';
+
+const imgMap = import.meta.glob('/src/assets/*.{png,jpg,jpeg,webp}', { eager: true, query: '?url', import: 'default' });
+const IMG = Object.fromEntries(Object.entries(imgMap).map(([p, url]) => [p.split('/').pop().toLowerCase(), url]));
 
 export default {
   name: 'RegisterView',
+  components: { AuthLayout },
   data: () => ({
-    name: '',
-    email: '',
-    sending: false,
-    msg: ''
+    name: '', email: '', pass: '',
+    accept: true, busy: false, error: '',
+    asideImg: IMG['h-lamarina.jpg'] || IMG['la_marina.jpg']
   }),
-  computed: {
-    canSend() {
-      const emailOk = /\S+@\S+\.\S+/.test(this.email || '');
-      return !!this.name && emailOk;
-    }
-  },
   methods: {
-    async onSubmit() {
-      if (!this.canSend || this.sending) return;
-      this.sending = true;
+    async submit() {
+      this.error = '';
+      this.busy = true;
       try {
-        await registerUseCase({
-          name: this.name.trim(),
-          email: this.email.trim()
-        });
-        this.msg = this.$t('register.successToast');
-        setTimeout(() => this.$router.push('/role'), 900);
+        await registerUseCase({ name: this.name || this.email.split('@')[0], email: this.email });
+        window.dispatchEvent(new CustomEvent('ps-session-updated'));
+        this.$router.push('/role');
       } catch (e) {
-        this.msg = this.$t('register.errorToast');
+        this.error = e?.message || 'No se pudo crear la cuenta';
       } finally {
-        this.sending = false;
-        setTimeout(() => (this.msg = ''), 2500);
+        this.busy = false;
       }
     }
   }
 };
 </script>
+<style scoped>
+.pwd-bar { height: 4px; background: var(--bg-soft); border-radius: 4px; margin-top: 8px; }
+.pwd-bar > div { height: 100%; background: var(--accent); border-radius: 4px; transition: width .2s ease; }
+</style>

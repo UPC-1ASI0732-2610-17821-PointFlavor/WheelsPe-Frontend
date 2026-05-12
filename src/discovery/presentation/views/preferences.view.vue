@@ -1,205 +1,128 @@
-<script setup>
-import { ref, onMounted, computed } from 'vue';
-import { getPreferencesQuery } from '@/discovery/application/get-preferences.query';
-import { updatePreferencesUsecase } from '@/discovery/application/update-preferences.usecase';
-import { listCategoriesQuery } from '@/discovery/application/list-categories.query';
-import { getSession } from '@/auth/application/get-session.query.js';
-
-const loading = ref(true);
-const saving = ref(false);
-const categories = ref([]);
-const session = ref(null);
-
-const form = ref({
-  cuisines: [],
-  maxPrice: null,
-  district: '',
-  nearOnly: false,
-});
-
-const budgets = [
-  { label: 'Sin límite', value: null },
-  { label: 'Hasta S/ 15', value: 15 },
-  { label: 'Hasta S/ 20', value: 20 },
-  { label: 'Hasta S/ 25', value: 25 },
-  { label: 'Hasta S/ 30', value: 30 },
-];
-
-// si falla la API de categorías
-const fallbackCategories = [
-  'Pollo',
-  'Marina',
-  'Criolla',
-  'Chifa',
-  'Postres',
-  'Menú',
-  'Café',
-  'Parrillas',
-];
-
-const userEmail = computed(() => session.value?.email || null);
-
-async function loadCategories() {
-  try {
-    const cats = await listCategoriesQuery();
-
-    const normalized = (Array.isArray(cats) && cats.length ? cats : fallbackCategories)
-        .map((cat) => {
-          if (typeof cat === 'string') {
-            try {
-              const parsed = JSON.parse(cat);
-              return parsed.name || cat;
-            } catch {
-              return cat;
-            }
-          }
-
-          if (cat && typeof cat === 'object') {
-            return cat.name || cat.label || String(cat.id ?? '');
-          }
-
-          return String(cat ?? '');
-        });
-
-    categories.value = normalized;
-  } catch {
-    categories.value = fallbackCategories;
-  }
-}
-
-async function loadSessionAndPreferences() {
-  try {
-    session.value = getSession();
-    if (!userEmail.value) {
-      console.warn('No hay email en sesión, ¿seguro que estás logeado?');
-      return;
-    }
-
-    const prefs = await getPreferencesQuery(userEmail.value);
-    form.value = {
-      cuisines: prefs.cuisines || [],
-      maxPrice: prefs.maxPrice ?? null,
-      district: prefs.district || '',
-      nearOnly: !!prefs.nearOnly,
-    };
-  } catch (err) {
-    console.warn('No se pudo cargar preferencias, usando defaults', err);
-  }
-}
-
-onMounted(async () => {
-  await loadCategories();
-  await loadSessionAndPreferences();
-  loading.value = false;
-});
-
-async function onSubmit() {
-  if (!userEmail.value) {
-    alert('Debes iniciar sesión para guardar tus preferencias.');
-    return;
-  }
-  saving.value = true;
-  try {
-    await updatePreferencesUsecase(userEmail.value, form.value);
-    alert(`Preferencias guardadas para ${userEmail.value}`);
-  } catch (err) {
-    console.error('Error guardando preferencias', err);
-    alert('Ocurrió un error al guardar tus preferencias');
-  } finally {
-    saving.value = false;
-  }
-}
-</script>
-
 <template>
-  <section class="wrap prefs-wrap" aria-labelledby="prefs-title">
-    <header class="page-head">
-      <h2 id="prefs-title" class="section-title">
-        {{ $t('preferences.title') }}
-      </h2>
-      <p class="section-subtitle">
-        {{ $t('preferences.subtitle') }}
-      </p>
-    </header>
-
-    <div v-if="loading">Cargando preferencias…</div>
-
-    <form v-else class="prefs-form" @submit.prevent="onSubmit">
-      <!-- Tipo de cocina -->
-      <fieldset class="prefs-group">
-        <!-- Legend solo accesible -->
-        <legend>{{ $t('preferences.cuisineTitle') }}</legend>
-
-        <!-- Título visible -->
-        <p class="prefs-group-title">
-          {{ $t('preferences.cuisineTitle') }}
+  <div class="page-enter">
+    <section class="section">
+      <div class="wrap-narrow">
+        <span class="eyebrow">Configuración</span>
+        <h1 style="font-size:clamp(36px,4vw,52px);margin-top:12px;margin-bottom:16px;line-height:1.05">Tus preferencias.</h1>
+        <p style="color:var(--ink-2);font-size:16px;margin-bottom:48px;max-width:520px">
+          Cuanto mejor te conozcamos, mejor afinaremos las recomendaciones. Esto solo lo usamos nosotros.
         </p>
 
-        <p class="hint">
-          {{ $t('preferences.cuisineHint') }}
-        </p>
+        <div style="display:grid;gap:40px">
+          <section class="pref-block">
+            <div class="pref-block__head">
+              <div><h3 style="font-size:24px">Cocinas favoritas</h3><p>Marca al menos tres.</p></div>
+              <span class="pref-block__count">{{ selected.length }} seleccionadas</span>
+            </div>
+            <div class="chips-row">
+              <button v-for="c in cuisines" :key="c" :class="['chip', selected.includes(c) && 'chip--on']" @click="toggle(selected, c)">
+                <PfIcon v-if="selected.includes(c)" name="check"/> {{ c }}
+              </button>
+            </div>
+          </section>
 
-        <div class="chips-grid">
-          <label
-              v-for="cat in categories"
-              :key="cat"
-              class="chip-option"
-          >
-            <input
-                type="checkbox"
-                :value="cat"
-                v-model="form.cuisines"
-            />
-            <span>{{ cat }}</span>
-          </label>
+          <section class="pref-block">
+            <div class="pref-block__head">
+              <div><h3 style="font-size:24px">Ocasión</h3><p>¿Para qué tipo de salidas usas PointFlavor?</p></div>
+            </div>
+            <div class="chips-row">
+              <button v-for="c in occasions" :key="c" :class="['chip', occ.includes(c) && 'chip--on']" @click="toggle(occ, c)">
+                <PfIcon v-if="occ.includes(c)" name="check"/> {{ c }}
+              </button>
+            </div>
+          </section>
+
+          <section class="pref-block">
+            <div class="pref-block__head"><div><h3 style="font-size:24px">Rango de precio típico</h3></div></div>
+            <div class="price-grid">
+              <button v-for="(p,i) in prices" :key="p.l" :class="['card price-card', i===priceIdx && 'on']" @click="priceIdx=i">
+                <div style="font-family:var(--font-display);font-size:22px">{{ p.l }}</div>
+                <div class="price-card__s">{{ p.s }}</div>
+              </button>
+            </div>
+          </section>
+
+          <section class="pref-block">
+            <div class="pref-block__head"><div><h3 style="font-size:24px">Notificaciones</h3></div></div>
+            <div style="display:grid;gap:14px">
+              <div v-for="n in notifications" :key="n.id" class="notif-row">
+                <div>
+                  <div style="font-weight:500">{{ n.label }}</div>
+                  <div style="font-size:13px;color:var(--ink-3);margin-top:2px">{{ n.desc }}</div>
+                </div>
+                <button :class="['toggle-switch', n.on && 'on']" @click="n.on = !n.on">
+                  <span class="toggle-switch__knob"/>
+                </button>
+              </div>
+            </div>
+          </section>
         </div>
-      </fieldset>
 
-      <!-- Presupuesto -->
-      <fieldset class="prefs-group">
-        <legend>{{ $t('preferences.budgetTitle') }}</legend>
-
-        <p class="prefs-group-title">
-          {{ $t('preferences.budgetTitle') }}
-        </p>
-
-        <select v-model="form.maxPrice">
-          <option
-              v-for="b in budgets"
-              :key="b.label"
-              :value="b.value"
-          >
-            {{ b.label }}
-          </option>
-        </select>
-      </fieldset>
-
-      <!-- Ubicación -->
-      <fieldset class="prefs-group">
-        <legend>{{ $t('preferences.locationTitle') }}</legend>
-
-        <p class="prefs-group-title">
-          {{ $t('preferences.locationTitle') }}
-        </p>
-
-        <label class="field">
-          <span>{{ $t('preferences.district') }}</span>
-          <input
-              type="text"
-              v-model="form.district"
-              :placeholder="$t('preferences.placeholderDistrict')"
-          />
-        </label>
-
-        <label class="field checkbox">
-          <input type="checkbox" v-model="form.nearOnly" />
-          <span>{{ $t('preferences.nearOnly') }}</span>
-        </label>
-      </fieldset>
-
-      <button class="btn-primary" type="submit" :disabled="saving">
-        {{ saving ? $t('preferences.saving') : $t('preferences.save') }}
-      </button>
-    </form>
-  </section>
+        <div style="display:flex;gap:12px;margin-top:48px">
+          <button class="btn btn--accent" @click="$router.push('/')">Guardar cambios</button>
+          <button class="btn btn--ghost" @click="$router.push('/')">Descartar</button>
+        </div>
+      </div>
+    </section>
+  </div>
 </template>
+<script>
+import PfIcon from '@/shared/presentations/components/pf-icon.vue';
+export default {
+  name: 'PreferencesView',
+  components: { PfIcon },
+  data: () => ({
+    cuisines: ['Pollo a la brasa','Comida criolla','Comida marina','Chifa','Parrillas','Postres','Café','Italiana','Mexicana','Vegana','Sushi','Anticuchos'],
+    occasions: ['Familiar','Romántico','Trabajo','Solo','Amigos','Niños'],
+    selected: ['Pollo a la brasa','Comida criolla','Comida marina'],
+    occ: ['Familiar','Amigos'],
+    prices: [
+      { l:'Económico', s:'Hasta S/25' },
+      { l:'Moderado', s:'S/25-50' },
+      { l:'Generoso', s:'S/50-90' },
+      { l:'Sin límite', s:'+ S/90' },
+    ],
+    priceIdx: 1,
+    notifications: [
+      { id:1, label:'Promos en mis cocinas favoritas', desc:'Te avisamos cuando un huarique top lance una promo.', on: true },
+      { id:2, label:'Newsletter mensual', desc:'Curaduría de la editora, primer viernes de cada mes.', on: true },
+      { id:3, label:'Reseñas respondidas', desc:'Cuando un dueño responde tu reseña.', on: false },
+    ]
+  }),
+  methods: {
+    toggle(set, val) {
+      const i = set.indexOf(val);
+      if (i >= 0) set.splice(i, 1); else set.push(val);
+    }
+  }
+};
+</script>
+<style scoped>
+.pref-block__head { display:flex; justify-content:space-between; align-items:baseline; margin-bottom: 16px; }
+.pref-block__head p { color: var(--ink-3); font-size: 14px; margin-top: 4px; }
+.pref-block__count { font-size: 12px; color: var(--ink-3); font-family: var(--font-mono); }
+.chips-row { display:flex; gap:8px; flex-wrap:wrap; }
+.price-grid { display:grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+.price-card { padding: 18px; text-align:left; cursor:pointer; }
+.price-card.on { background: var(--ink); color: var(--ink-inv); border-color: var(--ink); }
+.price-card__s { font-size:12px; color: var(--ink-3); font-family: var(--font-mono); margin-top:4px; }
+.price-card.on .price-card__s { color: rgba(255,255,255,.6); }
+
+.notif-row {
+  display:flex; justify-content:space-between; align-items:center; gap:16px;
+  padding: 14px 16px; border-radius: var(--r-md); border: 1px solid var(--line-soft);
+}
+.toggle-switch {
+  width:44px; height:24px; border-radius: 24px;
+  background: var(--line); border:none; position:relative;
+  cursor:pointer; transition: background .2s ease;
+}
+.toggle-switch.on { background: var(--accent); }
+.toggle-switch__knob {
+  position:absolute; top:3px; left:3px;
+  width:18px; height:18px; border-radius:50%; background:#fff;
+  transition: left .2s ease; box-shadow: 0 1px 2px rgba(0,0,0,.2);
+}
+.toggle-switch.on .toggle-switch__knob { left: 23px; }
+@media (max-width: 720px) { .price-grid { grid-template-columns: repeat(2, 1fr); } }
+</style>

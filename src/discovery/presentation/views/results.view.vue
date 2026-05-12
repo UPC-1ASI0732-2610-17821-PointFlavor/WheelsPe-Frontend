@@ -1,242 +1,180 @@
 <template>
-  <section class="wrap">
-    <h2 class="section-title">
-      Resultados
-      <small style="font-size:14px">{{ results.length }} hallazgos</small>
-    </h2>
+  <div class="page-enter" style="padding-top:48px;padding-bottom:48px">
+    <div class="wrap">
+      <div class="results-toolbar">
+        <form class="searchbox" @submit.prevent>
+          <PfIcon name="search" :size="18" style="color:var(--ink-3); margin-left:14px"/>
+          <input v-model="q" placeholder="Buscar por nombre, plato, distrito…"/>
+          <button type="submit" class="btn btn--accent btn--sm">Buscar</button>
+        </form>
+        <div class="results-toolbar__layout">
+          <button :class="['btn btn--ghost btn--sm', layout==='grid' && 'chip--on']" @click="layout='grid'">Grid</button>
+          <button :class="['btn btn--ghost btn--sm', layout==='row' && 'chip--on']" @click="layout='row'">Lista</button>
+        </div>
+      </div>
 
-    <div class="grid cards-4">
-      <HuariqueCard
-          v-for="h in results"
-          :key="h.id"
-          :item="h"
-          :img="itemImg(h)"
-          :promo="promosMap[h.id] || null"
-      />
+      <div class="results-layout">
+        <aside class="results-sidebar">
+          <h4 class="results-sidebar__h">Categorías</h4>
+          <div class="results-sidebar__list">
+            <button class="filter-chip" :class="{ on: cat==='all' }" @click="cat='all'">
+              <span><span v-if="cat==='all'" class="dot"/> Todas</span>
+            </button>
+            <button v-for="c in cats" :key="c.id" class="filter-chip" :class="{ on: cat===c.id }" @click="cat=c.id">
+              <span><span v-if="cat===c.id" class="dot"/> {{ c.name }}</span>
+              <span class="count">{{ c.count }}</span>
+            </button>
+          </div>
+
+          <h4 class="results-sidebar__h">Distrito</h4>
+          <select v-model="district" class="select" style="margin-bottom:24px">
+            <option v-for="d in districts" :key="d" :value="d">{{ d === 'all' ? 'Todos' : d }}</option>
+          </select>
+
+          <h4 class="results-sidebar__h">Precio máximo</h4>
+          <input type="range" min="15" max="80" step="1" v-model.number="priceMax" style="width:100%;accent-color:var(--accent)"/>
+          <div class="price-scale">
+            <span>S/15</span><span style="color:var(--ink);font-weight:600">S/{{ priceMax }}</span><span>S/80</span>
+          </div>
+        </aside>
+
+        <div>
+          <div class="results-head">
+            <h2 style="font-size:32px">
+              <template v-if="q">Resultados para <em style="color:var(--accent)">"{{ q }}"</em></template>
+              <template v-else>Todos los huariques</template>
+              <span class="results-count">{{ results.length }}</span>
+            </h2>
+            <select v-model="sort" class="select" style="width:auto">
+              <option value="rating">Mejor calificados</option>
+              <option value="price">Precio menor</option>
+              <option value="reviews">Más reseñas</option>
+            </select>
+          </div>
+
+          <div v-if="results.length === 0" class="empty-state">
+            <h3 style="font-size:24px;margin-bottom:8px">Nada coincide aún</h3>
+            <p style="color:var(--ink-2);margin-bottom:20px">Probá con otro término o ajusta los filtros.</p>
+            <button class="btn btn--accent" @click="clearFilters">Limpiar filtros</button>
+          </div>
+
+          <div v-else class="results-grid" :class="`results-grid--${layout}`">
+            <PfHuariqueCard v-for="h in results" :key="h.id" :h="h" :layout="layout"
+              :is-fav="favIds.includes(h.id)"
+              @open="goDetail(h.id)"
+              @toggle-fav="toggleFav"/>
+          </div>
+        </div>
+      </div>
     </div>
-  </section>
+  </div>
 </template>
-
 <script>
-import { searchHuariquesQuery } from '../../application/search-huariques.query.js';
-import { listFeaturedPromotionsQuery } from '@/promotions/application/list-featured-promotions.query.js';
-import HuariqueCard from '../components/huarique-card.vue';
-
-const modules = import.meta.glob('/src/assets/*.{png,jpg,jpeg,webp}', {
-  eager: true,
-  query: '?url',
-  import: 'default'
-});
-
-const IMG_MAP = Object.fromEntries(
-    Object.entries(modules).map(([p, url]) => {
-      const raw = p.split('/').pop().replace(/\.[^.]+$/, ''); // nombre sin extensión
-      const key = raw
-          .toLowerCase()
-          .normalize('NFD')
-          .replace(/[\u0300-\u036f]/g, ''); // <-- quita tildes/ñ
-      return [key, url];
-    })
-);
-
-const FALLBACK =
-    IMG_MAP['slogopuntosabor'] ||
-    IMG_MAP['logopuntosabor'] ||
-    Object.values(IMG_MAP)[0];
-
-const norm = s =>
-    String(s)
-        .toLowerCase()
-        .normalize('NFD')
-        .replace(/[\u0300-\u036f]/g, ''); // sin tildes
-
-const slugify = s =>
-    norm(s)
-        .replace(/\s+/g, '-')
-        .replace(/[^a-z0-9\-]/g, '');
-
-const variants = k => {
-  const a = norm(k);
-  return [a, a.replace(/-/g, '_'), a.replace(/[_-]/g, '')];
-};
-
-const hashIndex = (key, n) => {
-  let h = 0;
-  const s = norm(key);
-  for (let i = 0; i < s.length; i++) h = ((h * 31 + s.charCodeAt(i)) >>> 0);
-  return n ? h % n : 0;
-};
+import PfIcon from '@/shared/presentations/components/pf-icon.vue';
+import PfHuariqueCard from '@/shared/presentations/components/pf-huarique-card.vue';
+import { listHuariquesQuery } from '@/discovery/application/list-huariques.query.js';
+import { listCategoriesQuery } from '@/discovery/application/list-categories.query.js';
+import { getFavIdsQuery, toggleFavoriteUseCase } from '@/discovery/application/favorites.queries.js';
 
 export default {
   name: 'ResultsView',
-  components: { HuariqueCard },
-  data: () => ({
-    results: [],
-    promosMap: {}
-  }),
-  async created() {
-    this.fetch();
+  components: { PfIcon, PfHuariqueCard },
+  data() {
+    return {
+      q: this.$route.query.q || '',
+      cat: this.$route.query.cat || 'all',
+      sort: 'rating',
+      layout: 'grid',
+      district: 'all',
+      priceMax: 80,
+      cats: [],
+      huariques: [],
+      favIds: [],
+      loading: true
+    };
+  },
+  computed: {
+    districts() {
+      return ['all', ...new Set(this.huariques.map(h => h.district))];
+    },
+    results() {
+      let r = this.huariques.slice();
+      if (this.q) {
+        const qn = this.q.toLowerCase();
+        r = r.filter(h =>
+          h.name.toLowerCase().includes(qn) ||
+          h.category.toLowerCase().includes(qn) ||
+          h.district.toLowerCase().includes(qn) ||
+          h.tags.some(t => t.toLowerCase().includes(qn))
+        );
+      }
+      if (this.cat !== 'all') r = r.filter(h => h.cat === this.cat);
+      if (this.district !== 'all') r = r.filter(h => h.district === this.district);
+      r = r.filter(h => h.price <= this.priceMax);
+      if (this.sort === 'rating')  r.sort((a,b)=>b.rating - a.rating);
+      if (this.sort === 'price')   r.sort((a,b)=>a.price - b.price);
+      if (this.sort === 'reviews') r.sort((a,b)=>b.reviews - a.reviews);
+      return r;
+    }
   },
   watch: {
-    '$route.query.q': 'fetch'
+    '$route.query.q'(v) { this.q = v || ''; },
+    '$route.query.cat'(v) { this.cat = v || 'all'; }
   },
+  mounted() { this.favIds = getFavIds(); },
   methods: {
-    async fetch() {
-      this.results = await searchHuariquesQuery(this.$route.query.q || '');
-
-      // Cargar promociones destacadas activas y mapear por huariqueId
-      try {
-        const pf = await listFeaturedPromotionsQuery();
-        const map = {};
-        (pf.promotions || []).forEach(p => {
-          if (p && p.huariqueId) {
-            const existing = map[p.huariqueId];
-            // Nos quedamos con la promo que vence antes
-            if (!existing || p.daysRemaining < existing.daysRemaining) {
-              map[p.huariqueId] = p;
-            }
-          }
-        });
-        this.promosMap = map;
-      } catch (err) {
-        console.warn(
-            'No se pudieron cargar promociones destacadas:',
-            err.message || err
-        );
-        this.promosMap = {};
-      }
-    },
-    slugify(s) {
-      return String(s)
-          .toLowerCase()
-          .normalize('NFD')
-          .replace(/[\u0300-\u036f]/g, '')
-          .replace(/\s+/g, '-')
-          .replace(/[^a-z0-9\-]/g, '');
-    },
-    itemImg(r) {
-      const norm = s =>
-          String(s)
-              .toLowerCase()
-              .normalize('NFD')
-              .replace(/[\u0300-\u036f]/g, '');
-      const slugify = s =>
-          norm(s)
-              .replace(/\s+/g, '-')
-              .replace(/[^a-z0-9\-]/g, '');
-      const variants = k => {
-        const a = norm(k);
-        return [a, a.replace(/-/g, '_'), a.replace(/[_-]/g, '')];
-      };
-      const hashIndex = (key, n) => {
-        let h = 0;
-        const s = norm(key);
-        for (let i = 0; i < s.length; i++)
-          h = ((h * 31 + s.charCodeAt(i)) >>> 0);
-        return n ? h % n : 0;
-      };
-
-      const cat = slugify(r.category || this.$route.query.q || '');
-      const nameSlug = r.name ? slugify(r.name) : '';
-
-      const NAME_ALIAS = {
-        'parrilladas-don-mario': ['mario'],
-        'brasa-y-carbon': ['brasaycarbon'],
-        'fuego-criollo': ['fuegocriollo'],
-        'la-parrilla-del-norte': ['parrillanorte'],
-        'punto-grill': ['puntogrill']
-      };
-
-      // Alias por nombre de huarique
-      if (nameSlug && NAME_ALIAS[nameSlug]) {
-        const direct = NAME_ALIAS[nameSlug].flatMap(variants);
-        for (const key of direct) if (IMG_MAP[key]) return IMG_MAP[key];
-      }
-
-      // Intento directo por nombre
-      if (nameSlug) {
-        for (const key of variants(nameSlug)) if (IMG_MAP[key]) return IMG_MAP[key];
-      }
-
-      // Alias por categoría (UNIÓN de tus dos versiones, sin perder nada)
-      const ALIAS = {
-        pollo: [
-          'pollo',
-          'pollo-brasa',
-          'pollo_brasa',
-          'parrillasref',
-          'elbrasero',
-          'dontito',
-          'donlucho'
-        ],
-        marina: [
-          // nuevos alias
-          'marina',
-          'la-marina',
-          'la_marina',
-          'marisco',
-          'mariscos',
-          // antiguos
-          'olamarina',
-          'rinconmarino',
-          'marytierra'
-        ],
-        criolla: [
-          // nuevos
-          'criolla',
-          'antojos-criollos',
-          'antojos_criollos',
-          'marytierra',
-          'lapicanteria',
-          // antiguos
-          'dona',
-          'la_picanteria',
-          'sabornorteno'
-        ],
-        chifa: [
-          'chifaref',
-          'chifaping',
-          'don-pepe',
-          'don_pepe',
-          'el-forastero',
-          'el_forastero',
-          'sanjoylao'
-        ],
-        postres: [
-          'postresref',
-          'dulces',
-          'dulcesazon',
-          'mazamorra',
-          'mazamorra-morada',
-          'mazamorra_morada',
-          'lacaspdelpostre',
-          'lapasteleria'
-        ],
-        menu: [
-          // nuevos
-          'menuref',
-          'menu',
-          'menu-del-dia',
-          'menu_del_dia',
-          'aesqui',
-          // antiguo que NO queríamos perder
-          'donlucho'
-        ],
-        cafe: ['caferef', 'cafe', 'cafecentral', 'aromaysabor']
-      };
-
-      const list = (ALIAS[cat] || [cat])
-          .flatMap(variants)
-          .filter(k => IMG_MAP[k]);
-
-      if (list.length) {
-        const sorted = [...new Set(list)].sort();
-        const idx = hashIndex(r.name || String(r.id), sorted.length);
-        return IMG_MAP[sorted[idx]];
-      }
-
-      return FALLBACK;
-    }
+    goDetail(id) { this.$router.push({ name: 'huarique-detail', params: { id } }); },
+    toggleFav(h) { this.favIds = toggleFavorite(h); },
+    clearFilters() { this.q=''; this.cat='all'; this.district='all'; this.priceMax=80; }
   }
 };
 </script>
+<style scoped>
+.results-toolbar { display:grid; grid-template-columns: 1fr auto; gap: 16px; align-items: center; margin-bottom: 28px; }
+.results-toolbar__layout { display: flex; gap: 8px; }
+.searchbox {
+  display:flex; align-items:center; gap:8px;
+  background: var(--bg-elev); border:1px solid var(--line);
+  border-radius: var(--r-pill); padding: 4px 4px 4px 8px;
+  box-shadow: var(--shadow-sm);
+}
+.searchbox input { flex:1; border:none; outline:none; background:transparent; padding: 10px 6px; font-size: 14px; }
+.results-layout { display:grid; grid-template-columns: 260px 1fr; gap: 40px; align-items: start; }
+.results-sidebar {
+  position: sticky; top: 96px;
+  padding: 24px; border-radius: var(--r-lg);
+  background: var(--bg-elev); border:1px solid var(--line-soft);
+}
+.results-sidebar__h {
+  font-family: var(--font-sans); font-size: 12px; font-weight: 600;
+  letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-3);
+  margin-bottom: 14px;
+}
+.results-sidebar__list { display:flex; flex-direction:column; gap: 4px; margin-bottom: 24px; }
+.filter-chip {
+  display:flex; justify-content:space-between; align-items:center;
+  padding: 9px 12px; border-radius: var(--r-sm);
+  background: transparent; color: var(--ink-2);
+  border:none; text-align:left; font-size: 14px; cursor: pointer;
+}
+.filter-chip:hover { background: var(--bg-soft); }
+.filter-chip.on { background: var(--bg-soft); color: var(--ink); font-weight: 600; }
+.filter-chip .dot { display:inline-block; width:6px; height:6px; border-radius:50%; background: var(--accent); margin-right:6px; }
+.filter-chip .count { font-size: 11px; color: var(--ink-3); font-family: var(--font-mono); }
+
+.price-scale { display:flex; justify-content:space-between; font-size:12px; color: var(--ink-3); font-family: var(--font-mono); }
+
+.results-head { display:flex; justify-content:space-between; align-items:center; margin-bottom: 20px; }
+.results-count { font-family: var(--font-mono); font-size: 13px; color: var(--ink-3); margin-left: 12px; font-style: normal; font-weight: 400; }
+
+.results-grid--grid { display:grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+.results-grid--row { display:grid; grid-template-columns: 1fr; gap: 14px; }
+
+.empty-state { text-align:center; padding: 80px 24px; border:1px dashed var(--line); border-radius: var(--r-lg); background: var(--bg-soft); }
+
+@media (max-width: 960px) {
+  .results-layout { grid-template-columns: 1fr; }
+  .results-sidebar { position: static; }
+  .results-grid--grid { grid-template-columns: repeat(2, 1fr); }
+}
+</style>

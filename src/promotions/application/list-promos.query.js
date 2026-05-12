@@ -1,8 +1,12 @@
 import { PromosRepository } from '../infrastructure/promos.repository.js';
 import { PromotionEntity } from '../domain/model/promotion.entity.js';
+import { resolveImage } from '@/shared/presentations/image-resolver.js';
+
+export function normalizePromo(p) {
+    return { ...p, img: resolveImage(p?.img) };
+}
 
 export const listPromosQuery = async () => {
-
     const all = await PromosRepository.list();
 
     const expired = (all || []).filter(p => {
@@ -10,7 +14,7 @@ export const listPromosQuery = async () => {
             if (!p.startDate || !p.endDate) return false;
             const pe = new PromotionEntity(p);
             return pe.hasExpired();
-        } catch (e) {
+        } catch {
             return false;
         }
     });
@@ -23,5 +27,6 @@ export const listPromosQuery = async () => {
         }
     }
 
-    return await PromosRepository.list();
+    const fresh = await PromosRepository.list();
+    return (fresh || []).map(normalizePromo);
 };

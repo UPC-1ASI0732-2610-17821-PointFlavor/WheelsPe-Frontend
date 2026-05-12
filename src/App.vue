@@ -1,53 +1,45 @@
 <template>
   <nav class="nav">
     <div class="nav__inner">
-      <RouterLink class="brand" to="/">
-        <img class="brand__mark" :src="smallLogo" alt="PointFlavor" />
+      <RouterLink class="nav__brand" to="/">
+        <PfIcon name="brand" :size="26" style="color: var(--accent)"/>
+        <span>PointFlavor</span>
       </RouterLink>
 
-      <button
-        class="nav__toggle"
-        type="button"
-        aria-label="Abrir menu"
-        :aria-expanded="menuOpen ? 'true' : 'false'"
-        aria-controls="main-menu"
-        @click="toggleMenu"
-      >
-        <span></span>
-        <span></span>
-        <span></span>
+      <button class="nav__toggle" type="button" aria-label="Abrir menú"
+        :aria-expanded="menuOpen ? 'true' : 'false'" @click="toggleMenu">
+        <span></span><span></span><span></span>
       </button>
 
       <div id="main-menu" :class="['nav__menu', menuOpen && 'nav__menu--open']">
-        <RouterLink to="/">{{ $t('nav.home') }}</RouterLink>
-        <RouterLink to="/map">{{ $t('nav.explore') }}</RouterLink>
-        <RouterLink to="/promos">{{ $t('nav.promos') }}</RouterLink>
-        <RouterLink to="/plans">{{ $t('nav.plans') }}</RouterLink>
-        <RouterLink to="/contact">{{ $t('nav.contact') }}</RouterLink>
+        <RouterLink to="/">Inicio</RouterLink>
+        <RouterLink to="/categories">Categorías</RouterLink>
+        <RouterLink to="/map">Explorar</RouterLink>
+        <RouterLink to="/promos">Promos</RouterLink>
+        <RouterLink to="/plans">Planes</RouterLink>
+        <RouterLink to="/contact">Contacto</RouterLink>
 
         <div class="nav__actions">
           <LanguageSwitcher inline />
           <template v-if="!isLoggedIn">
-            <RouterLink class="btn" to="/auth" @click="closeAllMenus">{{ $t('nav.signin') }}</RouterLink>
+            <RouterLink class="btn btn--ghost btn--sm" to="/auth" @click="closeAllMenus">Ingresar</RouterLink>
+            <RouterLink class="btn btn--accent btn--sm" to="/register" @click="closeAllMenus">Crear cuenta</RouterLink>
           </template>
 
           <template v-else>
             <div class="user-menu" @click.stop>
-              <button
-                class="user-menu__toggle"
-                type="button"
-                :aria-expanded="userMenuOpen ? 'true' : 'false'"
-                @click="toggleUserMenu"
-              >
+              <button class="user-menu__toggle" type="button"
+                :aria-expanded="userMenuOpen ? 'true' : 'false'" @click="toggleUserMenu">
                 <span class="user-avatar" aria-hidden="true">{{ userInitials }}</span>
-                <span class="user-name">{{ userName }}</span>
+                <span>{{ userName }}</span>
               </button>
 
               <div v-if="userMenuOpen" class="user-menu__panel">
-                <RouterLink to="/favorites" @click="closeAllMenus">{{ $t('nav.favorites') }}</RouterLink>
-                <RouterLink to="/preferences" @click="closeAllMenus">{{ $t('nav.preferences') }}</RouterLink>
-                <RouterLink to="/profile" @click="closeAllMenus">{{ $t('nav.profile') }}</RouterLink>
-                <button class="btn btn--logout" @click="logout">Salir</button>
+                <RouterLink to="/profile" @click="closeAllMenus">Mi perfil</RouterLink>
+                <RouterLink to="/favorites" @click="closeAllMenus">Favoritos</RouterLink>
+                <RouterLink to="/preferences" @click="closeAllMenus">Preferencias</RouterLink>
+                <RouterLink v-if="isOwner" to="/owner" @click="closeAllMenus">Mi huarique</RouterLink>
+                <button class="btn--logout" @click="logout">Salir</button>
               </div>
             </div>
           </template>
@@ -60,31 +52,64 @@
 
   <footer class="footer">
     <div class="wrap">
-      <RouterLink class="brand" to="/" style="color:#fff">
-        <img class="brand__mark brand__mark--footer" :src="smallLogo" alt="PointFlavor" />
-      </RouterLink>
-      <small>© 2025 FijasDev</small>
+      <div class="footer__grid">
+        <div>
+          <div class="nav__brand">
+            <PfIcon name="brand" :size="26" style="color: var(--accent)"/>
+            <span>PointFlavor</span>
+          </div>
+          <p style="color:var(--ink-2); font-size:14px; max-width:320px; margin-top:16px;">
+            Una guía honesta para comer rico en cualquier barrio del Perú. Sin estrellas falsas, sin atajos.
+          </p>
+        </div>
+        <div>
+          <h4>Descubrir</h4>
+          <ul>
+            <li><RouterLink to="/categories">Categorías</RouterLink></li>
+            <li><RouterLink to="/map">Mapa</RouterLink></li>
+            <li><RouterLink to="/promos">Promociones</RouterLink></li>
+            <li><RouterLink to="/results">Cerca de ti</RouterLink></li>
+          </ul>
+        </div>
+        <div>
+          <h4>Cuenta</h4>
+          <ul>
+            <li><RouterLink to="/auth">Ingresar</RouterLink></li>
+            <li><RouterLink to="/register">Crear cuenta</RouterLink></li>
+            <li><RouterLink to="/plans">Planes</RouterLink></li>
+            <li><RouterLink to="/owner">Para dueños</RouterLink></li>
+          </ul>
+        </div>
+        <div>
+          <h4>Compañía</h4>
+          <ul>
+            <li><RouterLink to="/contact">Contacto</RouterLink></li>
+            <li><a href="#" @click.prevent>Términos</a></li>
+            <li><a href="#" @click.prevent>Privacidad</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer__bottom">
+        <span>© 2026 PointFlavor — Hecho en Lima</span>
+        <span>v2.0 · Rediseño minimal</span>
+      </div>
     </div>
   </footer>
 </template>
 
 <script>
 import { getSession, clearSession } from '@/auth/application/get-session.query.js';
-import smallLogo from '@/assets/slogoPuntoSabor.png';
 import LanguageSwitcher from '@/shared/presentations/components/language-switcher.vue';
+import PfIcon from '@/shared/presentations/components/pf-icon.vue';
 
 export default {
   name: 'App',
-  components: { LanguageSwitcher },
-  data: () => ({ smallLogo, session: null, loading: true, menuOpen: false, userMenuOpen: false }),
+  components: { LanguageSwitcher, PfIcon },
+  data: () => ({ session: null, menuOpen: false, userMenuOpen: false }),
   computed: {
-    isLoggedIn() {
-      return this.session && this.session.id;
-    },
-    userName() {
-      return this.session?.name || this.session?.email || 'Usuario';
-    },
-
+    isLoggedIn() { return this.session && this.session.id; },
+    isOwner() { return this.session?.role === 'owner'; },
+    userName() { return this.session?.name || this.session?.email || 'Usuario'; },
     userInitials() {
       const n = (this.userName || '').trim();
       if (!n) return 'U';
@@ -95,27 +120,23 @@ export default {
     }
   },
   mounted() {
-
     this.loadSession();
-
-
     window.addEventListener('storage', this.loadSession);
-
     window.addEventListener('ps-session-updated', this.loadSession);
-
-    const unlisten = this.$router.afterEach(() => {
+    this._removeAfterEach = this.$router.afterEach(() => {
       setTimeout(() => this.loadSession(), 50);
       this.closeAllMenus();
     });
-
-    this._removeAfterEach = unlisten;
+    document.addEventListener('click', this.handleOutsideClick);
   },
   beforeUnmount() {
     window.removeEventListener('storage', this.loadSession);
     window.removeEventListener('ps-session-updated', this.loadSession);
+    document.removeEventListener('click', this.handleOutsideClick);
     if (typeof this._removeAfterEach === 'function') this._removeAfterEach();
   },
   methods: {
+    handleOutsideClick() { this.userMenuOpen = false; },
     toggleMenu() {
       this.menuOpen = !this.menuOpen;
       if (this.menuOpen) this.userMenuOpen = false;
@@ -124,15 +145,8 @@ export default {
       this.userMenuOpen = !this.userMenuOpen;
       if (this.userMenuOpen) this.menuOpen = false;
     },
-    closeAllMenus() {
-      this.menuOpen = false;
-      this.userMenuOpen = false;
-    },
-    loadSession() {
-      const stored = getSession();
-      this.session = stored;
-      this.loading = false;
-    },
+    closeAllMenus() { this.menuOpen = false; this.userMenuOpen = false; },
+    loadSession() { this.session = getSession(); },
     logout() {
       clearSession();
       this.session = null;
@@ -142,91 +156,3 @@ export default {
   }
 };
 </script>
-
-<style scoped>
-.brand {
-  display: flex;
-  align-items: center;
-  text-decoration: none;
-}
-
-.brand__mark{
-  width: 36px;
-  height: 36px;
-  object-fit: contain;
-  filter: drop-shadow(0 2px 4px rgba(0,0,0,.15));
-}
-
-.brand__mark--footer{
-  width: 32px;
-  height: 32px;
-}
-
-.user-label{
-  display:inline-flex;
-  align-items:center;
-  gap:8px;
-  padding:6px 12px 6px 6px;
-  border-radius:9999px;
-  background:rgba(255,255,255,.9);
-  border:1px solid rgba(0,0,0,.08);
-  box-shadow:0 2px 8px rgba(0,0,0,.08);
-  backdrop-filter:saturate(120%) blur(3px);
-  font-weight:600;
-  font-size:.9rem;
-  color:#2b2b2b;
-  max-width:180px;
-  white-space:nowrap;
-  overflow:hidden;
-  text-overflow:ellipsis;
-  margin:0 8px;
-}
-
-.user-label:hover{
-  transform:translateY(-1px);
-  box-shadow:0 6px 16px rgba(0,0,0,.12);
-}
-
-.user-avatar{
-  width:26px;
-  height:26px;
-  border-radius:50%;
-  display:grid;
-  place-items:center;
-  font-size:.78rem;
-  font-weight:700;
-  color:#fff;
-  background:linear-gradient(135deg,#f59e0b,#fbbf24);
-  box-shadow:inset 0 -1px 0 rgba(0,0,0,.12);
-  flex:0 0 26px;
-}
-
-.user-name{
-  overflow:hidden;
-  text-overflow:ellipsis;
-}
-
-.btn--logout {
-  background: #f44;
-  color: #fff;
-  padding: 6px 12px;
-  border-radius: 6px;
-  border: none;
-  cursor: pointer;
-  font-weight: 600;
-  font-size: 0.9rem;
-  transition: all 0.2s;
-}
-
-.btn--logout:hover {
-  background: #d33;
-  transform: translateY(-1px);
-}
-
-@media (max-width: 640px) {
-  .brand__mark{ width: 32px; height: 32px; }
-  .user-label { padding:4px 10px 4px 4px; font-size:.8rem; max-width:140px; }
-  .user-avatar{ width:22px; height:22px; font-size:.7rem; }
-  .btn--logout { padding: 5px 10px; font-size: 0.8rem; }
-}
-</style>

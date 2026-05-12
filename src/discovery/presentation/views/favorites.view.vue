@@ -1,58 +1,52 @@
-<script setup>
-import { ref, computed, onMounted } from 'vue';
-import { useI18n } from 'vue-i18n';
-import HuariqueCard from '../components/huarique-card.vue';
-import { getFavorites } from '@/shared/infrastructure/favorites.service.js';
-
-const { t } = useI18n();
-const favorites = ref([]);
-
-onMounted(() => {
-  favorites.value = getFavorites();
-});
-
-const hasFavorites = computed(() => favorites.value && favorites.value.length > 0);
-</script>
-
 <template>
-  <section class="wrap" aria-labelledby="fav-title">
-    <header class="page-head">
-      <h1 id="fav-title" class="section-title">{{ t('favorites.title') }}</h1>
-      <p class="section-sub">{{ t('favorites.subtitle') }}</p>
-    </header>
+  <div class="page-enter">
+    <section class="section">
+      <div class="wrap">
+        <div class="section-head">
+          <div>
+            <span class="eyebrow" style="margin-bottom:10px;display:block">Tu colección</span>
+            <h2>Favoritos.</h2>
+            <p v-if="favs.length === 0">Aún no has guardado ningún huarique. Toca el corazón para empezar.</p>
+            <p v-else>{{ favs.length }} {{ favs.length === 1 ? 'lugar guardado' : 'lugares guardados' }}.</p>
+          </div>
+        </div>
 
-    <div v-if="hasFavorites" class="cards-grid">
-      <HuariqueCard
-          v-for="h in favorites"
-          :key="h.id"
-          :item="h"
-          :img="h.imgUrl"
-      />
-    </div>
+        <div v-if="favs.length === 0" class="empty-state">
+          <h3 style="font-size:24px;margin-bottom:8px">Tu lista está esperando</h3>
+          <p style="color:var(--ink-2);margin-bottom:20px">Guarda los lugares que quieras visitar y los tendrás siempre a mano.</p>
+          <RouterLink class="btn btn--accent" to="/results">Explorar huariques</RouterLink>
+        </div>
 
-    <div v-else class="empty">
-      <p>{{ t('favorites.empty') }}</p>
-      <RouterLink class="ps-btn ps-btn--primary" to="/map">
-        {{ t('favorites.ctaExplore') }}
-      </RouterLink>
-    </div>
-  </section>
+        <div v-else class="favs-grid">
+          <PfHuariqueCard v-for="h in favs" :key="h.id" :h="h" :is-fav="true"
+            @open="$router.push({ name:'huarique-detail', params:{ id: h.id } })"
+            @toggle-fav="onToggle"/>
+        </div>
+      </div>
+    </section>
+  </div>
 </template>
+<script>
+import PfHuariqueCard from '@/shared/presentations/components/pf-huarique-card.vue';
+import { getFavorites, toggleFavorite } from '@/shared/data/favorites.js';
 
+export default {
+  name: 'FavoritesView',
+  components: { PfHuariqueCard },
+  data: () => ({ favs: [] }),
+  mounted() {
+    this.favs = getFavorites();
+    window.addEventListener('pf-favs-updated', this.refresh);
+  },
+  beforeUnmount() { window.removeEventListener('pf-favs-updated', this.refresh); },
+  methods: {
+    refresh() { this.favs = getFavorites(); },
+    onToggle(h) { toggleFavorite(h); this.refresh(); }
+  }
+};
+</script>
 <style scoped>
-.cards-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 1.5rem;
-  padding: 1rem 0;
-}
-
-.wrap {
-  padding-top: 1.5rem;
-}
-
-.empty {
-  padding: 2rem 0;
-  text-align: center;
-}
+.favs-grid { display:grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+.empty-state { text-align:center; padding: 80px 24px; border:1px dashed var(--line); border-radius: var(--r-lg); background: var(--bg-soft); }
+@media (max-width: 960px) { .favs-grid { grid-template-columns: repeat(2, 1fr); } }
 </style>

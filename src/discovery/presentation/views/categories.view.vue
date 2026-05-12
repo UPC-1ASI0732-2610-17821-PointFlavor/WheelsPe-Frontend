@@ -1,130 +1,47 @@
 <template>
-  <section class="wrap categories-page" aria-labelledby="cat-title">
-    <header class="page-head fx-sub">
-      <h2 id="cat-title" class="section-title fx-title">
-        {{ $t('categories.title') }}
-      </h2>
-    </header>
-
-    <div class="grid cards-3 categories-grid">
-      <article
-          v-for="(c, i) in cats"
-          :key="c.id ?? catSlug(c)"
-          class="card card--category item"
-          :style="stagger(i)"
-      >
-        <div class="card__media media">
-          <img
-              :src="categoryImg(c)"
-              :alt="tCat(c)"
-              loading="lazy"
-              @error="onImgError"
-          />
-          <span class="media__badge" :aria-label="tCat(c)">
-            {{ tCat(c) }}
-          </span>
+  <div class="page-enter">
+    <section class="section">
+      <div class="wrap">
+        <div class="section-head">
+          <div>
+            <span class="eyebrow" style="margin-bottom:10px;display:block">Categorías</span>
+            <h2>¿Qué te provoca hoy?</h2>
+            <p>Cada categoría agrupa locales que comparten oficio, no solo ingredientes.</p>
+          </div>
         </div>
-
-        <div class="card__body">
-          <p class="meta">
-            {{ $t('categories.exploreInArea', { category: tCat(c) }) }}
-          </p>
+        <div class="cats-grid">
+          <article v-for="c in cats" :key="c.id" class="card cat-card"
+            @click="$router.push({ path:'/results', query:{ q: c.name } })">
+            <div class="cat-card__media"><PfSmartImg :src="c.img" :alt="c.name" :label="c.id"/></div>
+            <div class="cat-card__body">
+              <span class="eyebrow">{{ c.count }} lugares</span>
+              <h3 style="font-size:24px;margin-top:6px;margin-bottom:8px">{{ c.name }}</h3>
+              <p style="color:var(--ink-2);font-size:14px;margin-bottom:16px">{{ c.blurb }}</p>
+              <span style="display:inline-flex;align-items:center;gap:6px;font-size:13px;color:var(--accent);font-weight:500">
+                Explorar <PfIcon name="arrow"/>
+              </span>
+            </div>
+          </article>
         </div>
-
-        <footer class="card__footer">
-          <RouterLink class="btn" :to="{ path: '/results', query: { q: catName(c) } }">
-            {{ $t('categories.see') }}
-          </RouterLink>
-        </footer>
-      </article>
-    </div>
-  </section>
+      </div>
+    </section>
+  </div>
 </template>
-
 <script>
-import { listCategoriesQuery } from '../../application/list-categories.query.js';
-
-const modules = import.meta.glob('/src/assets/*.{png,jpg,jpeg,webp}', {
-  eager: true,
-  query: '?url',
-  import: 'default'
-});
-
-const IMG_MAP = Object.fromEntries(
-    Object.entries(modules).map(([path, url]) => {
-      const filename = path.split('/').pop().toLowerCase().replace(/\.[^.]+$/, '');
-      return [filename, url];
-    })
-);
-
-const FALLBACK =
-    IMG_MAP['logopuntosabor'] ||
-    IMG_MAP['slogopuntosabor'] ||
-    Object.values(IMG_MAP)[0];
-
+import { listCategoriesQuery } from '@/discovery/application/list-categories.query.js';
+import PfIcon from '@/shared/presentations/components/pf-icon.vue';
+import PfSmartImg from '@/shared/presentations/components/pf-smart-img.vue';
 export default {
   name: 'CategoriesView',
+  components: { PfIcon, PfSmartImg },
   data: () => ({ cats: [] }),
-  async created () {
-    const raw = await listCategoriesQuery();
-    this.cats = (raw ?? []).map((c, idx) => {
-      if (typeof c === 'string') {
-        return { id: this.slugify(c) || String(idx), name: c };
-      }
-      return {
-        id: c.id ?? this.slugify(c.name ?? `cat-${idx}`),
-        name: c.name ?? String(c) // fallback
-      };
-    });
-  },
-  methods: {
-    slugify (s) {
-      return String(s)
-          .toLowerCase()
-          .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
-          .replace(/\s+/g, '-')
-          .replace(/[^a-z0-9\-]/g, '');
-    },
-    catName (c) {
-      return typeof c === 'string' ? c : (c?.name ?? '');
-    },
-    catSlug (c) {
-      return this.slugify(this.catName(c));
-    },
-    tCat (c) {
-      const key = this.catSlug(c); // usar slug del name
-      const translated = this.$t(`cat.${key}`);
-      const name = this.catName(c);
-      return (typeof translated === 'string' && translated !== `cat.${key}`) ? translated : name;
-    },
-
-    categoryImg (c) {
-      const slug = this.catSlug(c);
-      const ALIAS = {
-        pollo:     ['pollo', 'pollo-brasa', 'pollo_brasa'],
-        marina:    ['marisco', 'la-marina', 'la_marina', 'mariscos'],
-        criolla:   ['criolla', 'antojos-criollos', 'antojos_criollos'],
-        chifa:     ['chifaref', 'la-picanteria', 'la_picanteria', 'don-pepe', 'don_pepe', 'el-forastero', 'el_forastero'],
-        postres:   ['postresref', 'dulces', 'dulcesazon', 'mazamorra', 'mazamorra-morada', 'mazamorra_morada'],
-        menu:      ['menuref', 'menú', 'menu'],
-        cafe:      ['caféref', 'caferef', 'cafe'],
-        parrillas: ['parrillasref', 'parrillas', 'parrilla']
-      };
-      const candidates = (ALIAS[slug] || [slug])
-          .map(k => [k, k.replace(/-/g, '_')])
-          .flat();
-      for (const key of candidates) if (IMG_MAP[key]) return IMG_MAP[key];
-      return FALLBACK;
-    },
-
-    onImgError (e) {
-      if (e?.target && e.target.src !== FALLBACK) e.target.src = FALLBACK;
-    },
-
-    stagger (i) {
-      const delay = (i % 12) * 60; // ms
-      return { animationDelay: `${delay}ms` };
-    }
-  }
+  async mounted() { this.cats = await listCategoriesQuery(); }
 };
 </script>
+<style scoped>
+.cats-grid { display:grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
+.cat-card { cursor:pointer; }
+.cat-card__media { aspect-ratio: 4/3; overflow: hidden; }
+.cat-card__body { padding: 20px; }
+@media (max-width: 960px) { .cats-grid { grid-template-columns: repeat(2, 1fr); } }
+</style>
