@@ -1,513 +1,811 @@
 {
-  "brand": "PointFlavor",
   "nav": {
     "home": "Home",
-    "explore": "Explore",
-    "language": "Language",
-    "categories": "Categories",
-    "promos": "Promos",
-    "plans": "Plans",
+    "rentals": "Rentals",
+    "register": "Sign Up"
+  },
+  "footer": {
+    "description": "Peer-to-peer vehicle rental platform. Find the perfect car for your next trip.",
+    "quickLinks": "Quick Links",
+    "support": "Support",
+    "faq": "FAQ",
+    "help": "Help Center",
     "contact": "Contact",
-    "map": "Map",
-    "signin": "Sign in",
-    "favorites": "Favorites",
-    "profile": "Profile",
-    "preferences": "Preferences"
+    "terms": "Terms & Conditions",
+    "contactTitle": "Contact",
+    "rights": "All rights reserved."
   },
   "home": {
-    "headline": "Discover authentic huariques near you",
-    "subhead": "Explore by category, find promotions, and check real community reviews. Save your favorites and support local businesses.",
-    "searchPlaceholder": "Search by name, district, or category…",
-    "ctaExplore": "Explore",
-    "ctaMap": "View map",
-    "catsTitle": "Explore by categories",
-    "popularNear": "Popular nearby options",
-    "view": "View"
-  },
-  "categories": {
-    "title": "Categories",
-    "see": "See",
-    "exploreInArea": "Explore {category} in your area"
-  },
-  "plans": {
-    "title": "Membership plans",
-    "subtitle": "Choose the plan that best fits your huarique. You can switch anytime.",
-    "common": {
-      "noCommitment": "No commitment",
-      "securePayments": "Secure payments",
-      "support": "Spanish support"
+    "hero": {
+      "title": "Rent the Perfect Car",
+      "subtitle": "Find vehicles near you. Connect with verified owners.",
+      "cta": "Explore Vehicles",
+      "ctaOwner": "List Your Car"
     },
-    "ctaHelp": "Have questions about the plans?",
-    "ctaContact": "Contact us →",
-    "basic": {
-      "name": "BASIC",
-      "price": "Free",
-      "button": "Start for free",
-      "tagline": "Perfect to start gaining visibility",
-      "features": [
-        "Publish your huarique",
-        "Profile with essential info",
-        "Access to reviews and ratings"
-      ],
-      "popular": "Popular"
+    "features": {
+      "title": "Why choose MOVEO?",
+      "trust": {
+        "title": "Trust & Safety",
+        "description": "Verified users, insurance and protected deposits."
+      },
+      "flexible": {
+        "title": "Flexible Pricing",
+        "description": "Rent by hour or day. You decide."
+      },
+      "support": {
+        "title": "24/7 Support",
+        "description": "We're here to help you anytime."
+      }
     },
-    "premium": {
-      "name": "PREMIUM",
-      "price": "$35",
-      "period": "/MO",
-      "button": "Choose Premium",
-      "tagline": "Ideal if you already have reviews and want to grow",
-      "features": [
-        "Everything in Basic plan",
-        "Featured promotion tools",
-        "Visit and comment stats",
-        "Technical support & consulting"
-      ]
-    },
-    "exclusive": {
-      "name": "EXCLUSIVE",
-      "price": "$50",
-      "period": "/MO",
-      "button": "Choose Exclusive",
-      "tagline": "For brands that want maximum exposure",
-      "features": [
-        "Everything in Premium plan",
-        "Priority advertising",
-        "Advanced review management",
-        "Access to special events"
-      ]
+    "howItWorks": {
+      "title": "How it works?",
+      "step1": {
+        "title": "Search",
+        "description": "Find the perfect vehicle near you"
+      },
+      "step2": {
+        "title": "Book",
+        "description": "Request rental with digital contract"
+      },
+      "step3": {
+        "title": "Enjoy",
+        "description": "Pick up the car and enjoy your trip"
+      }
     }
   },
-  "ownerNew": {
-    "title": "Register huarique",
-    "subtitle": "Fill in the information so people can find you more easily.",
-    "sections": {
-      "data": "Data",
-      "schedules": "Schedules",
-      "address": "Address",
-      "services": "Services",
-      "menu": "Menu"
+  "adventures": {
+    "title": "Adventure List",
+    "new": "New Adventure",
+    "id": "ID",
+    "name": "Name",
+    "actions": "Actions"
+  },
+  "errors": {
+    "ocurred": "Errors occurred"
+  },
+  "sidebar": {
+    "owner": {
+      "dashboard": "Dashboard",
+      "vehicles": "My Vehicles",
+      "addVehicle": "Add Vehicle",
+      "requests": "Requests",
+      "earnings": "Earnings",
+      "profile": "Profile"
     },
-    "promos": {
-      "title": "Promotions",
-      "seeDetails": "See details",
-
-      "manageBtn": "Manage promos",
-      "addBtn": "New promotion",
-
-      "labels": {
-        "off": "off"
-      },
-
+    "renter": {
+      "dashboard": "Dashboard",
+      "browse": "Browse",
+      "myRentals": "My Rentals",
+      "myPayments": "My Payments",
+      "favorites": "Favorites",
+      "profile": "Profile"
+    }
+  },
+  "dashboard": {
+    "renter": {
+      "welcome": "Welcome, {name}",
+      "summary": "Here is a summary of your activity",
+      "activity": "Recent activity",
+      "noActivity": "No recent activity",
+      "findTrip": "Find your next trip",
+      "activeRentals": "Active Rentals",
+      "completedTrips": "Completed Trips",
+      "totalSpent": "Total Spent",
+      "favorites": "Favorites",
+      "upcomingTrips": "Upcoming Trips",
       "status": {
         "active": "Active",
-        "upcoming": "Upcoming",
-        "expired": "Expired",
-        "complete": "Sold out"
+        "confirmed": "Confirmed",
+        "pending": "Pending"
       },
-
-      "actions": {
-        "close": "Close",
-        "create": "Create promotion",
-        "creating": "Creating...",
-        "delete": "Delete promotion"
-      },
-
-      "create": {
-        "title": "Create promotion"
-      },
-
-      "fields": {
-        "title": "Title",
-        "note": "Short description",
-        "discount": "Discount (%)",
-        "maxUses": "Max uses",
-        "start": "Start date",
-        "end": "End date",
-        "huarique": "Huarique",
-        "selectPlaceholder": "Select a huarique…"
-      },
-
-      "noHuariquesHint": "Register a huarique first to create promotions.",
-
-      "details": {
-        "validity": "Validity",
-        "available": "Available"
-      },
-
+      "total": "Total",
+      "viewDetails": "View Details",
+      "noUpcomingTrips": "You have no scheduled trips",
+      "exploreVehicles": "Explore Vehicles",
+      "myFavorites": "My Favorites",
+      "noFavorites": "You have no favorite vehicles yet",
+      "viewCatalog": "View Catalog"
+    }
+  },
+  "iam": {
+    "login": {
+      "title": "Welcome Back",
+      "subtitle": "Sign in to your MOVEO account",
+      "email": "Email",
+      "emailPlaceholder": "Enter your email",
+      "password": "Password",
+      "passwordPlaceholder": "Enter your password",
+      "rememberMe": "Remember me",
+      "forgotPassword": "Forgot password?",
+      "submit": "Sign In",
+      "submitting": "Signing in...",
+      "noAccount": "Don't have an account?",
+      "createAccount": "Create new account",
+      "demoUsers": "Demo Users",
+      "testAs": "Test as",
       "errors": {
-        "titleRequired": "Title is required",
-        "createFailed": "Error creating promotion"
-      },
-
-      "confirm": {
-        "delete": "Are you sure you want to delete this promotion?"
-      },
-
-      "alerts": {
-        "deleted": "Promotion deleted successfully",
-        "deleteFailed": "Could not delete the promotion"
-      },
-
-      "cards": {
-        "pollo":  { "title": "2x1 Chicken Today",  "note": "Selected restaurants" },
-        "marino": { "title": "Seafood Menu $20",   "note": "Mon–Fri 12:00–16:00" },
-        "cafe":   { "title": "Coffee + Brownie",   "note": "Only at Aroma & Sabor" },
-        "parrilla": { "title": "Family Grill",     "note": "15% off on weekends" },
-        "postre": { "title": "Desserts 3x2",       "note": "At La Dulcería all month" },
-        "criollo": { "title": "Criollo Discount",  "note": "10% off criollo dishes" }
+        "emailRequired": "Email is required",
+        "emailInvalid": "Please enter a valid email",
+        "passwordRequired": "Password is required",
+        "passwordLength": "Password must be at least 6 characters",
+        "invalidCredentials": "Incorrect email or password"
       }
-  },
-    "labels": {
+    },
+    "register": {
+      "title": "Create Account",
+      "subtitle": "Join MOVEO and start your journey",
+      "selectRole": {
+        "title": "Select Your Role",
+        "subtitle": "How would you like to use MOVEO?",
+        "renter": {
+          "title": "I'm a Client",
+          "description": "Search and rent vehicles easily and safely. Find the perfect car for your next adventure.",
+          "feature1": "Advanced vehicle search",
+          "feature2": "Instant bookings",
+          "feature3": "Rental history",
+          "feature4": "24/7 Support",
+          "button": "Register as Client"
+        },
+        "owner": {
+          "title": "I'm an Owner",
+          "description": "List your vehicles and generate extra income. Manage your cars simply and efficiently.",
+          "feature1": "Unlimited vehicle listings",
+          "feature2": "Complete control panel",
+          "feature3": "Booking management",
+          "feature4": "Guaranteed income",
+          "button": "Register as Owner"
+        },
+        "footer": "Already have an account?",
+        "login": "Sign in"
+      },
+      "common": {
+        "firstName": "First Name",
+        "firstNamePlaceholder": "Enter your first name",
+        "lastName": "Last Name",
+        "lastNamePlaceholder": "Enter your last name",
+        "email": "Email",
+        "emailPlaceholder": "Enter your email",
+        "phone": "Phone",
+        "phonePlaceholder": "+51 999 999 999",
+        "dni": "DNI",
+        "dniPlaceholder": "12345678",
+        "password": "Password",
+        "passwordPlaceholder": "Create a secure password",
+        "confirmPassword": "Confirm Password",
+        "confirmPasswordPlaceholder": "Confirm your password",
+        "termsAccept": "I accept the",
+        "termsLink": "terms and conditions",
+        "submit": "Create Account",
+        "submitting": "Creating account...",
+        "backToLogin": "Back to login",
+        "hasAccount": "Already have an account?"
+      },
+      "renter": {
+        "title": "Client Registration",
+        "subtitle": "Complete your information to rent vehicles",
+        "licenseNumber": "Driver's License",
+        "licenseNumberPlaceholder": "License number"
+      },
+      "owner": {
+        "title": "Owner Registration",
+        "subtitle": "Complete your information to rent out vehicles",
+        "licenseNumber": "Driver's License",
+        "licenseNumberPlaceholder": "License number",
+        "bankInfo": "Banking Information",
+        "bankName": "Bank",
+        "bankNamePlaceholder": "Select your bank",
+        "accountType": "Account Type",
+        "accountTypePlaceholder": "Select type",
+        "accountNumber": "Account Number",
+        "accountNumberPlaceholder": "Enter account number",
+        "accountTypes": {
+          "savings": "Savings",
+          "checking": "Checking"
+        }
+      },
+      "errors": {
+        "firstNameRequired": "First name is required",
+        "firstNameLength": "First name must be at least 2 characters",
+        "lastNameRequired": "Last name is required",
+        "lastNameLength": "Last name must be at least 2 characters",
+        "emailRequired": "Email is required",
+        "emailInvalid": "Please enter a valid email",
+        "phoneRequired": "Phone is required",
+        "phoneInvalid": "Please enter a valid phone number",
+        "dniRequired": "DNI is required",
+        "dniInvalid": "DNI must be 8 digits",
+        "licenseRequired": "Driver's license is required",
+        "passwordRequired": "Password is required",
+        "passwordLength": "Password must be at least 6 characters",
+        "confirmPasswordRequired": "Please confirm your password",
+        "passwordMismatch": "Passwords do not match",
+        "termsRequired": "You must accept the terms and conditions",
+        "bankNameRequired": "Bank name is required",
+        "accountTypeRequired": "Account type is required",
+        "accountNumberRequired": "Account number is required",
+        "accountNumberInvalid": "Please enter a valid account number"
+      },
+      "success": {
+        "title": "Account Created!",
+        "message": "Your account has been successfully created",
+        "redirecting": "Redirecting to login..."
+      }
+    },
+    "profile": {
+      "title": "My Profile",
+      "personalInfo": "Personal Information",
+      "preferences": "Preferences",
+      "security": "Security",
       "name": "Name",
-      "category": "Category",
-      "avgPrice": "Average price (S/)",
-      "district": "District",
-      "nearMe": "Near me",
-      "street": "Street / No.",
-      "city": "City",
-      "reference": "Reference",
+      "email": "Email",
       "phone": "Phone",
-      "openAt": "Open",
-      "closeAt": "Close",
-      "closed": "Closed",
-      "delivery": "Delivery",
-      "takeaway": "Takeaway",
-      "dinein": "Dine-in",
-      "itemName": "Name",
-      "price": "Price (S/)",
-      "section": "Section",
-      "addItem": "+ Add item",
-      "remove": "Remove",
-      "save": "Save",
-      "select": "Select…"
-    },
-    "categories": {
-      "anticuchos": "Anticuchos",
-      "ceviche": "Ceviche",
-      "chifa": "Chifa",
-      "polleria": "Pollería"
-    },
-    "placeholders": {
-      "street": "Av. Los Incas 123",
-      "city": "Lima",
-      "reference": "In front of the park",
-      "phone": "+51 999 999 999"
-    },
-    "saveError": "We couldn't save it. Please try again.",
-    "promosMgmt": {
-      "create": { "title": "Create Featured Promotion" },
-      "form": {
-        "titleLabel": "Promotion Title",
-        "titlePh": "2x1 Chicken, 30% Discount, etc.",
-        "descriptionLabel": "Description",
-        "descriptionPh": "Promotion details...",
-        "discountLabel": "Discount (%)",
-        "startLabel": "Start Date",
-        "endLabel": "End Date",
-        "maxUsesLabel": "Quota (0 = no limit)"
-      },
-      "actions": {
-        "publish": "Publish Featured Promotion",
-        "publishing": "Creating..."
-      },
-      "success": {
-        "title": "Promotion Published!",
-        "lead": "Your promotion will appear as featured in the listings.",
-        "createAnother": "Create Another"
-      },
-      "list": {
-        "title": "Active Featured Promotions",
-        "loading": "Loading promotions...",
-        "searchPh": "Search promotion...",
-        "empty": "There are no active promotions at the moment"
-      },
-      "card": {
-        "daysRemaining": "Days remaining:",
-        "available": "Available:",
-        "usage": "{percent}% used",
-        "claim": "Claim Offer"
-      },
-      "errors": { "createFailed": "Error creating promotion" },
-      "confirm": { "deleteIrreversible": "Delete this promotion? This action can't be undone in the mock." }
-    }
-  },
-  "login": {
-    "title": "Sign in",
-    "subtitle": "Enter your email to continue",
-    "emailPlaceholder": "Email",
-    "emailAria": "Email address",
-    "submit": "Sign in",
-    "submitting": "Signing in…",
-    "noAccount": "Don't have an account?",
-    "register": "Sign up",
-    "errorDefault": "We couldn't sign you in. Please try again.",
-    "forgotPassword": "Forgot your password?"
-  },
-  "register": {
-    "title": "Hello, friend!",
-    "namePlaceholder": "Name",
-    "nameAria": "Full name",
-    "emailPlaceholder": "Email address",
-    "emailAria": "Email address",
-    "submit": "Create account",
-    "submitting": "Creating…",
-    "helloRight": "Glad to see you!",
-    "subRight": "Create your account with your name and email. It will take less than a minute.",
-    "successToast": "Account created! We’ll take you to choose your role…",
-    "errorToast": "We couldn’t create your account. Please try again."
-  },
-  "roleSelect": {
-    "title": "Choose your role",
-    "subtitle": "Select how you want to use PuntoSabor",
-    "radiogroupLabel": "Available roles",
-    "explorerTitle": "Explorer",
-    "explorerDesc": "Find huariques and save your favorites.",
-    "ownerTitle": "Restaurant owner",
-    "ownerDesc": "Publish your huarique and manage your showcase.",
-    "continue": "Continue",
-    "explorerAria": "Explorer role",
-    "ownerAria": "Restaurant owner role"
-  },
-  "contact": {
-    "title": "Contact Us",
-    "formTitle": "Write to us",
-    "nameLabel": "Name",
-    "namePh": "Your name",
-    "emailLabel": "Email",
-    "emailPh": "you (at) email.com",
-    "messageLabel": "Message",
-    "messagePh": "Tell us how we can help…",
-    "submit": "Send",
-    "submitting": "Sending…",
-    "sent": "Message sent!",
-    "mapTitle": "Find us",
-    "mapAria": "Map and contact details",
-    "info": { "address": "Av. Sabor 123, Lima", "hours": "Mon–Fri: 9:00–18:00" }
-  },
-  "map": {
-    "title": "Huariques near you",
-    "searchPlaceholder": "Search by name…",
-    "filters": {
-      "all": "All",
-      "pollo": "Chicken",
-      "criollo": "Creole",
-      "mar": "Seafood",
-      "chifa": "Chifa",
-      "postre": "Desserts",
-      "menu": "Menu",
-      "cafe": "Coffee",
-      "parri": "Grill"
-    },
-    "quick": {
-      "recommended": "Recommended",
-      "nearby": "Nearby",
-      "reviews": "Reviews"
-    },
-    "actions": {
-      "viewMenu": "View menu",
-      "directions": "Directions",
-      "call": "Call",
-      "share": "Share"
-    },
-    "empty": "Select a huarique to see its details",
-    "noResults": "No results for “{q}”.",
-    "shareText": "Sharing this huarique: {name}. Hours: {hours}.",
-    "copied": "Link copied",
-    "aria": {
-      "filterByCat": "Filter by category",
-      "search": "Search huarique",
-      "map": "Huariques map",
-      "list": "Huariques list"
-    }
-  },
-  "common": { "saving": "Saving..." },
-  "reviews": {
-    "title": "Reviews",
-    "cta": { "reviewThisPlace": "Review", "viewReviews": "View reviews" },
-    "new": { "title": "New review", "subtitle": "Tell us about your experience" },
-    "form": {
-      "rating": "Rating",
-      "comment": "Review",
-      "placeholder": "Write your opinion (min. 5 characters)",
-      "submit": "Send review"
-    }
-  },
-  "passwordRecovery": {
-    "title": "Password recovery",
-    "emailLabel": "Email address",
-    "emailPlaceholder": "you (at) email.com",
-    "submit": "Send instructions",
-    "submitting": "Sending…",
-    "successTitle": "Email sent!",
-    "successLead": "We have sent recovery instructions to:",
-    "successNote": "Check your inbox (including the spam folder) and follow the link to reset your password.",
-    "retry": "Try again",
-    "backToLogin": "Back to login",
-    "errorDefault": "We couldn’t process your request. Please try again.",
-    "haveLink": "Already have the link?",
-    "gotLink": "Already received the link?",
-    "resetNow": "Reset now"
-  },
-  "resetPassword": {
-    "title": "Reset Password",
-    "invalidTitle": "Invalid or Expired Link",
-    "tokenMissing": "No recovery token was found",
-    "requestNewLink": "Request New Link",
-    "newPassword": "New Password",
-    "minCharsPh": "Minimum 6 characters",
-    "minChars": "Minimum 6 characters",
-    "confirmPassword": "Confirm Password",
-    "repeatPasswordPh": "Repeat your password",
-    "passwordsMatch": "Passwords match",
-    "passwordsNoMatch": "Passwords do not match",
-    "updating": "Updating...",
-    "updateBtn": "Update Password",
-    "errorDefault": "Couldn't reset password. Please try again.",
-    "successTitle": "Password Updated!",
-    "successLead": "Your password has been reset successfully.",
-    "goToLogin": "Go to Login"
-  },
-  "ownerManage": {
-    "promos": {
-      "title": "Create Featured Promotion",
-      "listTitle": "Active Featured Promotions",
-      "loading": "Loading promotions...",
-      "empty": "There are no active promotions at the moment",
-      "searchPlaceholder": "Search promotion...",
-      "fields": {
-        "title": "Promotion Title",
-        "description": "Description",
-        "discount": "Discount (%)",
-        "maxUses": "Quota (0 = no limit)",
-        "start": "Start Date",
-        "end": "End Date"
-      },
-      "placeholders": {
-        "title": "2x1 Chicken, 30% Off, etc.",
-        "description": "Promotion details..."
-      },
-      "details": {
-        "validity": "Validity",
-        "daysRemaining": "Days remaining",
-        "available": "Available"
-      },
-      "labels": { "used": "used" },
-      "actions": {
-        "publish": "Publish Featured Promotion",
-        "creating": "Creating...",
-        "claim": "Claim Offer",
-        "delete": "Delete",
-        "createAnother": "Create Another"
-      },
-      "success": {
-        "title": "Promotion Published!",
-        "body": "Your promotion will appear featured in the listings."
-      },
-      "confirm": { "delete": "Delete this promotion? This action cannot be undone in the mock." },
-      "alerts": {
-        "deleted": "Promotion deleted",
-        "deleteFailed": "Could not delete the promotion"
-      },
-      "errors": { "createFailed": "Failed to create promotion" }
+      "dni": "DNI",
+      "license": "Driver's License",
+      "memberSince": "Member since",
+      "verified": "Verified",
+      "notVerified": "Not verified",
+      "editProfile": "Edit Profile",
+      "changePassword": "Change Password",
+      "switchAccount": "Switch Account",
+      "switchTo": "Switch to",
+      "logout": "Sign Out"
     }
   },
   "payment": {
-    "title": "Update Membership",
-    "subtitle": "Confirm your details and payment method.",
-    "card": "Card",
-    "wallet": "Wallet",
-    "cardData": "Card Details",
-    "holderName": "Cardholder",
-    "holderPh": "Juan Pérez",
-    "number": "Card Number",
-    "numberPh": "4532 1488 0343 6467",
-    "month": "Month",
-    "year": "Year",
-    "walletIdLabel": "{name} ID",
-    "walletIdPh": "Your ID or Phone Number",
-    "amount": "Amount",
-    "cycle": "Billing Cycle",
-    "monthly": "Monthly",
-    "quarterly": "Quarterly",
-    "annual": "Annually",
-    "total": "Total Due",
-    "processing": "Processing...",
-    "payAmount": "Pay S/ {amount}",
-    "success": "Payment Successful!",
-    "activated": "Your membership has been activated.",
-    "txId": "Transaction ID",
-    "plan": "Plan",
-    "back": "Back",
-    "error": "Error",
-    "errorGeneric": "Error processing payment"
-  },
-  "favorites": {
-    "title": "My favorite huariques",
-    "subtitle": "Huariques you have marked as favorites.",
-    "empty": "You don't have any favorites yet.",
-    "ctaExplore": "Explore huariques",
-    "cta": {
-      "add": "Save {name} as favorite",
-      "remove": "Remove {name} from favorites",
-      "addShort": "Save",
-      "inFavorites": "In favorites"
-    }
-  },
-  "notifications": {
-    "title": "Notification settings",
-    "intro": "Turn notifications on or off according to your preferences.",
-    "section": { "general": "General preferences" },
-    "fields": {
-      "app": "In-app notifications",
-      "promos": "Promotions and discounts",
-      "reviews": "New reviews of my huariques"
-    },
-    "save": "Save preferences",
-    "saved": "Your notification preferences were saved successfully."
-  },
-  "report": {
-    "action": "Report info",
-    "title": "Report incorrect information",
-    "subtitle": "Help us keep the data accurate.",
-    "field": {
-      "label": "What do you want to correct?",
-      "options": {
-        "name": "Name",
-        "address": "Address",
-        "hours": "Opening hours",
-        "other": "Other data"
+    "management": {
+      "summary": {
+        "totalAmount": "Total amount",
+        "concept": "Concept"
+      },
+      "methods": {
+        "title": "Select your payment method",
+        "card": "Card",
+        "yape": "Yape",
+        "cash": "Cash"
+      },
+      "card": {
+        "cardNumber": "Card Number",
+        "cardNumberPlaceholder": "1234 5678 9012 3456",
+        "cardHolder": "Cardholder Name",
+        "cardHolderPlaceholder": "JOHN DOE",
+        "cardHolderDefault": "CARDHOLDER NAME",
+        "expiry": "Expiration",
+        "expiryPlaceholder": "MM/YY",
+        "expiryDefault": "MM/YY",
+        "ccv": "CCV",
+        "ccvPlaceholder": "123"
+      },
+      "yape": {
+        "instructions": "Scan the QR code with your Yape app and then upload the receipt",
+        "qrCode": "Yape QR Code",
+        "receipt": "Payment Receipt",
+        "selectFile": "Select file"
+      },
+      "cash": {
+        "title": "Cash Payment",
+        "description": "You can make the payment in cash directly with the owner when picking up the vehicle.",
+        "note": "The owner will confirm receipt of payment."
+      },
+      "actions": {
+        "cancel": "Cancel",
+        "confirm": "Confirm Payment"
+      },
+      "alerts": {
+        "selectMethod": "Please select a payment method",
+        "invalidCard": "Please enter a valid card number",
+        "invalidHolder": "Please enter the cardholder name",
+        "invalidExpiry": "Please enter a valid date (MM/YY)",
+        "invalidCCV": "Please enter a valid CCV",
+        "uploadReceipt": "Please upload the Yape receipt"
       }
     },
-    "current": "Current value",
-    "suggested": "Correct value",
-    "comment": "Comment (optional)",
-    "placeholders": {
-      "suggested": "Type the correct value…",
-      "comment": "Explain what's wrong or share a reference link…"
+    "history": {
+      "title": "Payment History",
+      "subtitle": "Manage and view your transactions",
+      "stats": {
+        "total": "Total",
+        "transactions": "Transactions",
+        "completed": "Completed",
+        "pending": "Pending"
+      },
+      "filters": {
+        "searchPlaceholder": "Search by ID, method or amount...",
+        "status": "Status",
+        "method": "Method",
+        "all": "All"
+      },
+      "status": {
+        "completed": "completed",
+        "pending": "pending",
+        "cancelled": "cancelled"
+      },
+      "methods": {
+        "card": "Card",
+        "yape": "Yape",
+        "cash": "Cash"
+      },
+      "empty": {
+        "title": "No payments found",
+        "message": "There are no transactions matching the selected filters."
+      },
+      "details": {
+        "amount": "Amount",
+        "transactionId": "Transaction ID",
+        "date": "Date",
+        "description": "Description"
+      }
+    }
+  },
+  "rental": {
+    "browse": {
+      "title": "Explore Vehicles",
+      "vehiclesFound": "vehicles found",
+      "sortBy": "Sort by",
+      "sortOptions": {
+        "default": "Featured",
+        "priceAsc": "Price: Low to High",
+        "priceDesc": "Price: High to Low",
+        "newest": "Newest"
+      },
+      "filters": {
+        "title": "Filters",
+        "priceRange": "Price Range",
+        "vehicleType": "Vehicle Type",
+        "transmission": "Transmission",
+        "fuelType": "Fuel Type",
+        "seats": "Seats",
+        "clearFilters": "Clear Filters"
+      },
+      "vehicleCard": {
+        "perDay": "per day",
+        "rentNow": "Rent Now",
+        "viewDetails": "View Details"
+      },
+      "empty": {
+        "title": "No vehicles found",
+        "message": "Try adjusting your filters"
+      }
     },
-    "submit": "Submit report",
-    "submitting": "Submitting…",
+    "myVehicles": {
+      "title": "My Vehicles",
+      "subtitle": "Manage your vehicle fleet",
+      "addVehicle": "Add Vehicle",
+      "addFirstVehicle": "Add my first vehicle",
+      "loading": "Loading vehicles...",
+      "empty": {
+        "title": "You have no published vehicles",
+        "message": "Add your first vehicle to start renting"
+      },
+      "vehicleCard": {
+        "edit": "Edit",
+        "delete": "Delete",
+        "available": "Available",
+        "unavailable": "Unavailable"
+      }
+    },
+    "addVehicle": {
+      "title": "Add Vehicle",
+      "subtitle": "Publish your vehicle and start earning",
+      "sections": {
+        "basicInfo": "Basic Information",
+        "basicInfoDesc": "General vehicle details",
+        "specifications": "Technical Specifications",
+        "specificationsDesc": "Important vehicle details",
+        "location": "Location & Pricing",
+        "locationDesc": "Where it is and how much it costs",
+        "pricing": "Pricing & Availability",
+        "description": "Description",
+        "photos": "Photos"
+      },
+      "fields": {
+        "brand": "Brand",
+        "brandPlaceholder": "e.g., Toyota, Honda",
+        "model": "Model",
+        "modelPlaceholder": "e.g., Corolla, Civic",
+        "year": "Year",
+        "yearPlaceholder": "2020",
+        "licensePlate": "License Plate",
+        "licensePlatePlaceholder": "ABC-123",
+        "color": "Color",
+        "colorPlaceholder": "Select a color",
+        "transmission": "Transmission",
+        "transmissionPlaceholder": "Select transmission",
+        "fuelType": "Fuel Type",
+        "fuelTypePlaceholder": "Select fuel type",
+        "seats": "Number of Seats",
+        "seatsPlaceholder": "5",
+        "district": "District",
+        "districtPlaceholder": "Select a district",
+        "address": "Address",
+        "addressPlaceholder": "123 Example Ave (optional)",
+        "dailyPrice": "Daily Price (S/)",
+        "dailyPricePlaceholder": "150.00",
+        "status": "Status",
+        "statusPlaceholder": "Vehicle status",
+        "description": "Vehicle Description",
+        "descriptionPlaceholder": "Example: Car in excellent condition, recently serviced, air conditioning, bluetooth...",
+        "photos": "Vehicle Photos",
+        "uploadPhotos": "Upload Photos"
+      },
+      "options": {
+        "transmissions": {
+          "manual": "Manual",
+          "automatic": "Automatic",
+          "semiAutomatic": "Semi-automatic"
+        },
+        "fuelTypes": {
+          "gasoline": "Gasoline",
+          "diesel": "Diesel",
+          "electric": "Electric",
+          "hybrid": "Hybrid",
+          "gas": "Natural Gas"
+        },
+        "statuses": {
+          "available": "Available",
+          "rented": "Rented",
+          "maintenance": "Maintenance"
+        }
+      },
+      "actions": {
+        "cancel": "Cancel",
+        "publish": "Publish Vehicle",
+        "publishing": "Publishing..."
+      },
+      "required": "Required field",
+      "alerts": {
+        "success": "Vehicle published successfully!",
+        "error": "Error publishing vehicle"
+      }
+    },
+    "editVehicle": {
+      "title": "Edit Vehicle",
+      "subtitle": "Update your vehicle information",
+      "loading": "Loading vehicle information...",
+      "notFound": {
+        "title": "Vehicle not found",
+        "message": "Could not load vehicle information"
+      },
+      "actions": {
+        "cancel": "Cancel",
+        "save": "Save Changes",
+        "saving": "Saving..."
+      },
+      "alerts": {
+        "success": "Vehicle updated successfully!",
+        "error": "Error updating vehicle"
+      }
+    },
+    "vehicleDetail": {
+      "title": "Vehicle Details",
+      "loading": "Loading vehicle...",
+      "notFound": "Could not load vehicle",
+      "backToVehicles": "Back to Vehicles",
+      "backToMyVehicles": "Back to My Vehicles",
+      "specifications": "Specifications",
+      "pricePerDay": "Price per day",
+      "rentNow": "Rent Now",
+      "features": {
+        "transmission": "Transmission",
+        "fuelType": "Fuel Type",
+        "seats": "Seats",
+        "year": "Year",
+        "color": "Color",
+        "licensePlate": "License Plate"
+      }
+    },
+    "rentalRequests": {
+      "title": "Rental Requests",
+      "subtitle": "Manage rental requests for your vehicles",
+      "loading": "Loading requests...",
+      "tabs": {
+        "all": "All",
+        "pending": "Pending",
+        "confirmed": "Confirmed",
+        "active": "Active",
+        "completed": "Completed",
+        "rejected": "Rejected",
+        "cancelled": "Cancelled"
+      },
+      "empty": {
+        "title": "No requests",
+        "message": "When you receive rental requests they will appear here"
+      },
+      "requestCard": {
+        "requestedBy": "Requested by",
+        "dates": "Dates",
+        "from": "From",
+        "to": "To",
+        "totalPrice": "Total Price",
+        "actions": {
+          "accept": "Accept",
+          "reject": "Reject"
+        }
+      },
+      "alerts": {
+        "confirmAccept": "Accept request from {name}?",
+        "confirmReject": "Reject request from {name}?",
+        "accepted": "Request accepted and rental {status} successfully",
+        "rejected": "Request rejected",
+        "errorAccept": "Error accepting request",
+        "errorReject": "Error rejecting request"
+      },
+      "status": {
+        "confirmed": "confirmed",
+        "active": "activated",
+        "completed": "completed"
+      }
+    },
+    "myRentals": {
+      "title": "My Rentals",
+      "subtitle": "View and manage your rental history",
+      "tabs": {
+        "all": "All",
+        "pending": "Pending",
+        "confirmed": "Confirmed",
+        "active": "Active",
+        "completed": "Completed",
+        "cancelled": "Cancelled"
+      },
+      "loading": "Loading rentals...",
+      "empty": {
+        "title": "You have no rentals yet",
+        "message": "Browse available vehicles and make your first rental",
+        "searchVehicles": "Search Vehicles"
+      },
+      "rentalCard": {
+        "dates": "Rental dates",
+        "from": "From",
+        "to": "To",
+        "totalPrice": "Total",
+        "status": "Status"
+      }
+    }
+  },
+  "shared": {
+    "sidebar": {
+      "renter": {
+        "dashboard": "Dashboard",
+        "explore": "Explore Vehicles",
+        "myRentals": "My Rentals",
+        "favorites": "Favorites",
+        "profile": "Profile"
+      },
+      "owner": {
+        "dashboard": "Dashboard",
+        "myVehicles": "My Vehicles",
+        "rentalRequests": "Rental Requests",
+        "earnings": "Earnings",
+        "profile": "Profile"
+      },
+      "logout": "Sign Out"
+    },
+    "header": {
+      "notifications": "Notifications",
+      "profile": "Profile",
+      "settings": "Settings",
+      "renter": {
+        "title": "Find your next trip"
+      },
+      "owner": {
+        "title": "Manage your fleet"
+      }
+    },
+    "footer": {
+      "profile": "Profile",
+      "dashboard": "Dashboard",
+      "explore": "Explore",
+      "favorites": "Favorites"
+    },
+    "pageNotFound": {
+      "title": "404",
+      "subtitle": "Page Not Found",
+      "message": "Sorry, the page you're looking for doesn't exist",
+      "backHome": "Back to Home",
+      "viewVehicles": "View Vehicles"
+    },
+    "comingSoon": {
+      "title": "Coming Soon",
+      "message": "This feature is under development",
+      "backHome": "Back to Home"
+    },
+    "dashboard": {
+      "renter": {
+        "welcome": "Welcome, {name}",
+        "summary": "Manage your rentals and discover new vehicles",
+        "activeRentals": "Active Rentals",
+        "completedTrips": "Completed Trips",
+        "totalSpent": "Total Spent",
+        "favorites": "Favorites",
+        "upcomingTrips": "Upcoming Trips",
+        "noUpcomingTrips": "You have no upcoming trips",
+        "exploreVehicles": "Explore Vehicles",
+        "myFavorites": "My Favorites",
+        "noFavorites": "You have no favorite vehicles yet",
+        "viewDetails": "View Details",
+        "total": "Total",
+        "status": {
+          "pending": "Pending",
+          "confirmed": "Confirmed",
+          "active": "Active"
+        }
+      },
+      "owner": {
+        "welcome": "Welcome, {name}",
+        "summary": "Manage your vehicles and requests",
+        "publishedVehicles": "Published Vehicles",
+        "totalEarnings": "Total Earnings",
+        "activeRentals": "Active Rentals",
+        "pendingRequests": "Pending Requests",
+        "pendingRequestsTitle": "Pending Requests",
+        "noPendingRequests": "You have no pending requests",
+        "requestsWaiting": "You have {count} requests waiting for your response",
+        "reviewRequests": "Review Requests",
+        "myVehicles": "My Vehicles",
+        "noVehicles": "You have no published vehicles",
+        "addVehicle": "Add Vehicle",
+        "viewAll": "View All",
+        "monthlyEarnings": "Monthly Earnings",
+        "bestMonth": "Best Month",
+        "totalEarned": "Total Earned",
+        "averagePerMonth": "Monthly Average"
+      }
+    }
+  },
+  "adventure": {
+    "menu": {
+      "title": "Adventures"
+    },
+    "routes": {
+      "title": "Discover Your Next Adventure",
+      "subtitle": "Epic routes that transform a simple rental into an unforgettable experience",
+      "stats": {
+        "total": "Available Routes",
+        "beach": "Beach Routes",
+        "mountain": "Mountain Routes",
+        "cultural": "Cultural Routes"
+      },
+      "filters": {
+        "search": "Search routes by name, location or tags...",
+        "type": "Route Type",
+        "difficulty": "Difficulty",
+        "reset": "Reset Filters"
+      },
+      "types": {
+        "all": "All Routes",
+        "beach": "Beach Routes",
+        "mountain": "Mountain Routes",
+        "cultural": "Cultural Routes",
+        "gastronomic": "Gastronomic Routes",
+        "adventure": "Extreme Adventure",
+        "scenic": "Scenic Routes"
+      },
+      "difficulty": {
+        "all": "All",
+        "easy": "Easy",
+        "moderate": "Moderate",
+        "hard": "Hard"
+      },
+      "card": {
+        "featured": "Featured",
+        "from": "From",
+        "explore": "Explore Route",
+        "reviews": "reviews"
+      },
+      "empty": {
+        "title": "No routes found",
+        "message": "Try adjusting your search filters"
+      },
+      "loading": "Loading adventure routes...",
+      "error": "Error loading routes"
+    },
+    "detail": {
+      "overview": "Overview",
+      "itinerary": "Itinerary",
+      "highlights": "Highlights",
+      "vehicles": "Recommended Vehicles",
+      "bookNow": "Start Adventure",
+      "duration": "Duration",
+      "distance": "Distance",
+      "difficulty": "Difficulty",
+      "bestSeason": "Best Season",
+      "rating": "Rating",
+      "backToRoutes": "Back to Routes",
+      "selectVehicle": "Select Vehicle",
+      "notFound": "Route not found"
+    }
+  },
+  "notification": {
+    "notifications": "Notifications",
+    "markAsRead": "Mark as read",
+    "markAllAsRead": "Mark all as read",
+    "delete": "Delete",
+    "view": "View",
+    "viewAll": "View all",
+    "noNotifications": "You have no notifications",
+    "noNotificationsDesc": "When you have new notifications, they will appear here",
+    "loadError": "Error loading notifications"
+  },
+  "support": {
+    "tickets": "Support Tickets",
+    "createTicket": "Create Ticket",
+    "ticketType": "Ticket Type",
+    "selectType": "Select type",
+    "vehicle": "Vehicle",
+    "selectVehicle": "Select vehicle",
+    "rental": "Rental",
+    "selectRental": "Select rental",
+    "rentalRequired": "You must select the associated rental",
+    "damageResponsible": "Damage Responsible User",
+    "renterName": "Renter Name",
+    "rentalPeriod": "Rental Period",
+    "rentalId": "Rental ID",
+    "rentalValue": "Rental Value",
+    "priorityLabel": "Priority",
+    "selectPriority": "Select priority",
+    "subject": "Subject",
+    "subjectPlaceholder": "Briefly describe the issue",
+    "description": "Description",
+    "descriptionPlaceholder": "Provide details about the issue or inquiry",
+    "estimatedCost": "Estimated Cost",
+    "estimatedCostPlaceholder": "S/. 0.00",
+    "attachments": "Attachments",
+    "attachmentsHelp": "You can upload images (max 5MB each)",
+    "submitTicket": "Submit Ticket",
+    "totalTickets": "Total Tickets",
+    "openTickets": "Open Tickets",
+    "damageReports": "Damage Reports",
+    "closedTickets": "Closed Tickets",
+    "filterByStatus": "Filter by Status",
+    "allStatuses": "All statuses",
+    "filterByType": "Filter by Type",
+    "allTypes": "All types",
+    "noTicketsFound": "No tickets found",
+    "proceedToPayment": "Proceed to Payment",
+    "closeTicket": "Close Ticket",
+    "updateTicket": "Update Ticket",
+    "actions": "Actions",
+    "resolutionNotes": "Resolution Notes",
+    "resolutionNotesPlaceholder": "Write resolution notes...",
+    "closeTicketConfirm": "Are you sure you want to close this ticket?",
+    "resolvedAt": "Resolved on",
+    "ticketCreatedSuccess": "Ticket created successfully",
+    "ticketCreatedError": "Error creating ticket",
+    "ticketClosedSuccess": "Ticket closed successfully",
+    "ticketClosedError": "Error closing ticket",
+    "fillRequiredFields": "Please fill all required fields",
+    "typeRequired": "Ticket type is required",
+    "vehicleRequired": "Vehicle is required for damage reports",
+    "priorityRequired": "Priority is required",
+    "subjectRequired": "Subject is required",
+    "descriptionRequired": "Description is required",
+    "type": {
+      "damage": "Damage Report",
+      "complaint": "Complaint",
+      "question": "Question",
+      "technical": "Technical Issue",
+      "other": "Other"
+    },
+    "status": {
+      "open": "Open",
+      "inProgress": "In Progress",
+      "resolved": "Resolved",
+      "closed": "Closed"
+    },
+    "priority": {
+      "low": "Low",
+      "medium": "Medium",
+      "high": "High",
+      "urgent": "Urgent"
+    }
+  },
+  "common": {
+    "success": "Success",
+    "error": "Error",
     "cancel": "Cancel",
-    "toastSaved": "Thanks! We’ll review your report.",
-    "toastError": "We couldn’t submit the report. Please try again."
+    "back": "Back"
   },
-  "status": {
-    "openNow": "Open now",
-    "closed": "Closed",
-    "unconfirmed": "Not confirmed"
-  },
-  "preferences": {
-    "title": "Preference Settings",
-    "subtitle": "Customize your recommendations based on your huarique style.",
-    "cuisineTitle": "Preferred cuisine type",
-    "cuisineHint": "You can choose more than one.",
-    "budgetTitle": "Budget per person",
-    "locationTitle": "Location",
-    "district": "Preferred district",
-    "placeholderDistrict": "E.g.: Surco, Miraflores…",
-    "nearOnly": "Only show huariques near me",
-    "save": "Save preferences",
-    "saving": "Saving…"
+  "user": {
+    "owner": "Owner",
+    "renter": "Renter"
   }
 }

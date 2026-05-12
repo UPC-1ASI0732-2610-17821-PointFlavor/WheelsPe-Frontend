@@ -1,0 +1,22 @@
+/* ------------------ COLORS ------------------ */
+:root {
+    /* Backgrounds */
+    --bg-base: #F5F5F5;
+    --bg-muted: #CCD0DA;
+    --bg-moveo-green: #3A5E5E;
+    --bg-moveo-pink: #FF6B6B;
+    --bg-moveo-orange: #FFA07A;
+    --bg-moveo-orange-light: #FFE4C4;
+
+    /* Text Colors */
+    --text-primary: #000D0D;
+    --text-secondary: #333333;
+    --text-secondary-2: #FAFAFF;
+    --text-moveo: #6FA9A9;
+    --text-moveo-pink: #6FA9A9; /* Nota: en tu diseño parece que es el mismo color que moveo, ajusta si es diferente */
+
+    /* Brand Colors (para botones, highlights, etc.) */
+    --brand-green: #3A5E5E;
+    --brand-pink: #FF6B6B;
+    --brand-orange: #FFA07A;
+}

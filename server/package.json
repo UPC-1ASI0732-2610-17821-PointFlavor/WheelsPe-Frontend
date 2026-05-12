@@ -1,0 +1,10 @@
+{
+  "name": "moveo-api",
+  "version": "1.0.0",
+  "scripts": {
+    "start": "sh start.sh"
+  },
+  "dependencies": {
+    "json-server": "^0.17.0"
+  }
+}

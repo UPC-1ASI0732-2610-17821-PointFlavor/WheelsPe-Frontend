@@ -1,32 +1,38 @@
-# PointFlavor (Vue + Vite, DDD-inspirado)
+# moveo-frontend
 
-## Scripts
-- `npm run dev` — arranca el frontend en http://localhost:5173
-- `npm run api` — levanta json-server en http://localhost:3001
+This template should help get you started developing with Vue 3 in Vite.
 
-## Estructura
-- `auth/` (login, register, role-select)
-- `discovery/` (categorías, resultados, mapa)
-- `promotions/`, `reviews/`, `memberships/`, `contact/`
-- `shared/` (infra transversal y vistas comunes)
+## Recommended IDE Setup
 
-## Flujo
-1. Ir a **/auth** para “loguearse” (usa email de `server/db.json` o regístrate).
-2. Seleccionar rol en **/role**.
-3. Explorar **/categories**, ver **/results?q=Pollo**, **/map**, **/promos**, **/plans**, **/contact**.
+[VS Code](https://code.visualstudio.com/) + [Vue (Official)](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur).
 
-## Deploy en Vercel
-Usa estos valores al crear el proyecto:
-- **Framework**: Vite
-- **Root Directory**: `./`
-- **Build Command**: `npm run build`
-- **Output Directory**: `dist`
-- **Install Command**: `npm install`
+## Recommended Browser Setup
 
-Variables de entorno (Production y Preview):
-- **Key**: `VITE_API_URL`
-- **Value**: URL del backend (ej: `https://pflavor-backend-production.up.railway.app`)
+- Chromium-based browsers (Chrome, Edge, Brave, etc.):
+  - [Vue.js devtools](https://chromewebstore.google.com/detail/vuejs-devtools/nhdogjmejiglipccpnnnanhbledajbpd) 
+  - [Turn on Custom Object Formatter in Chrome DevTools](http://bit.ly/object-formatters)
+- Firefox:
+  - [Vue.js devtools](https://addons.mozilla.org/en-US/firefox/addon/vue-js-devtools/)
+  - [Turn on Custom Object Formatter in Firefox DevTools](https://fxdx.dev/firefox-devtools-custom-object-formatters/)
 
-Notas:
-- No uses `/swagger` en `VITE_API_URL`, solo el host base.
-- Si cambias `VITE_API_URL`, redeploy en Vercel para aplicar el cambio.
+## Customize configuration
+
+See [Vite Configuration Reference](https://vite.dev/config/).
+
+## Project Setup
+
+```sh
+npm install
+```
+
+### Compile and Hot-Reload for Development
+
+```sh
+npm run dev
+```
+
+### Compile and Minify for Production
+
+```sh
+npm run build
+```

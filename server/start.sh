@@ -1,2 +1,1 @@
-#!/usr/bin/env bash
-npx json-server --watch server/db.json --routes server/routes.json --port 3001
+npx json-server --watch db.json --routes routes.json --port $PORT --host 0.0.0.0
