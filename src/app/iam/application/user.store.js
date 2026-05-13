@@ -84,12 +84,17 @@ export async function login(email, password) {
   try {
     // Llamar al endpoint de autenticación del backend
     const response = await IamApi.login(email, password)
-    
-    console.log('✅ Login exitoso para:', response.user?.email)
-    
+
+    if (!response?.user) {
+      console.error('Respuesta de login inesperada:', response)
+      throw new Error('Respuesta de login inválida del servidor')
+    }
+
+    console.log('✅ Login exitoso para:', response.user.email)
+
     // Guardar usuario en estado y localStorage
     setUser(response.user)
-    
+
     userState.loading = false
     return response.user
   } catch (error) {
@@ -136,12 +141,17 @@ export async function register(userData) {
     
     // Llamar al endpoint de registro
     const response = await IamApi.register(payload)
-    
-    console.log('✅ Registro exitoso para:', response.user?.email)
-    
+
+    if (!response?.user) {
+      console.error('Respuesta de registro inesperada:', response)
+      throw new Error('Respuesta de registro inválida del servidor')
+    }
+
+    console.log('✅ Registro exitoso para:', response.user.email)
+
     // Guardar usuario en estado y localStorage
     setUser(response.user)
-    
+
     userState.loading = false
     return response.user
   } catch (error) {

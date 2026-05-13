@@ -21,6 +21,48 @@ function buildLocalSessionResponse(user) {
   }
 }
 
+// Normaliza la respuesta de /auth/login y /auth/register para soportar
+// distintas formas: { user, token, ... } | { data: {...} } | usuario plano.
+function extractAuthResponse(response) {
+  if (!response || typeof response !== 'object') {
+    return { user: null, token: null, refreshToken: null, expiresAt: null }
+  }
+
+  const token =
+    response.token ||
+    response.accessToken ||
+    response.access_token ||
+    response.jwt ||
+    null
+
+  const refreshToken =
+    response.refreshToken ||
+    response.refresh_token ||
+    null
+
+  const expiresAt =
+    response.expiresAt ||
+    response.expires_at ||
+    response.expiresIn ||
+    null
+
+  let rawUser = response.user || response.data?.user || response.data || null
+
+  // Si no encontramos un sub-objeto user, pero la respuesta tiene campos
+  // típicos de usuario, asumimos que el usuario viene plano.
+  if (!rawUser && (response.email || response.id || response.role || response.firstName)) {
+    const { token: _t, refreshToken: _r, expiresAt: _e, accessToken: _a, refresh_token: _rt, ...userFields } = response
+    rawUser = userFields
+  }
+
+  return {
+    user: rawUser,
+    token,
+    refreshToken,
+    expiresAt
+  }
+}
+
 function buildLocalRegisterPayload(userData) {
   return {
     role: userData.role || 'renter',
@@ -72,13 +114,19 @@ export const IamApi = {
     }
 
     const response = await apiClient.post('/auth/login', { email, password })
-    
-    // Store tokens
-    if (response.token) {
-      tokenManager.setTokens(response.token, response.refreshToken, response.expiresAt)
+    const parsed = extractAuthResponse(response)
+
+    if (parsed.token) {
+      tokenManager.setTokens(parsed.token, parsed.refreshToken, parsed.expiresAt)
     }
-    
-    return response
+
+    return {
+      ...response,
+      user: normalizeUser(parsed.user),
+      token: parsed.token,
+      refreshToken: parsed.refreshToken,
+      expiresAt: parsed.expiresAt
+    }
   },
 
   /**
@@ -105,13 +153,19 @@ export const IamApi = {
     }
 
     const response = await apiClient.post('/auth/register', userData)
-    
-    // Store tokens
-    if (response.token) {
-      tokenManager.setTokens(response.token, response.refreshToken, response.expiresAt)
+    const parsed = extractAuthResponse(response)
+
+    if (parsed.token) {
+      tokenManager.setTokens(parsed.token, parsed.refreshToken, parsed.expiresAt)
     }
-    
-    return response
+
+    return {
+      ...response,
+      user: normalizeUser(parsed.user),
+      token: parsed.token,
+      refreshToken: parsed.refreshToken,
+      expiresAt: parsed.expiresAt
+    }
   },
 
   /**

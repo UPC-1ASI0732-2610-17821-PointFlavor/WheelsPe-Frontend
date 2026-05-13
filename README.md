@@ -36,3 +36,34 @@ npm run dev
 ```sh
 npm run build
 ```
+
+## E2E (Selenium + Sauce Labs)
+
+This project includes a simple Sauce Labs Selenium smoke test that validates the login page.
+
+### Requirements
+
+- Sauce Labs credentials: `SAUCE_USERNAME`, `SAUCE_ACCESS_KEY`
+- Public base URL for the frontend: `E2E_BASE_URL`
+  - Example: `https://your-frontend-domain.com`
+  - If you want to test a local server, use Sauce Connect and set `SAUCE_TUNNEL_ID`.
+
+### Run the test
+
+PowerShell:
+
+```powershell
+$env:SAUCE_USERNAME="your-username"
+$env:SAUCE_ACCESS_KEY="your-access-key"
+$env:E2E_BASE_URL="https://your-frontend-domain.com"
+npm run test:sauce
+```
+
+Optional settings:
+
+- `SAUCE_REGION` (default: `us-west-1`)
+- `SAUCE_PLATFORM` (default: `Windows 11`)
+- `SAUCE_BROWSER` (default: `chrome`)
+- `SAUCE_BROWSER_VERSION` (default: `latest`)
+- `SAUCE_BUILD`, `SAUCE_TEST_NAME`
+- `SAUCE_TUNNEL_ID` (when using Sauce Connect)
