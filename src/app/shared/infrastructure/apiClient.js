@@ -111,21 +111,14 @@ async function request(path, options = {}) {
   
   let res = await fetch(url, { headers, ...options })
   
-  // Handle 401 - try to refresh token
+  // Handle 401 - try to refresh token (auto-logout disabled)
   if (res.status === 401 && !isAuthEndpoint) {
     try {
       const newToken = await refreshAccessToken()
       headers['Authorization'] = `Bearer ${newToken}`
       res = await fetch(url, { headers, ...options })
     } catch (refreshError) {
-      // Refresh failed, redirect to login
-      console.error('Token refresh failed:', refreshError)
-      tokenManager.clearTokens()
-      
-      // Dispatch event for components to handle logout
-      window.dispatchEvent(new CustomEvent('auth:logout', { detail: { reason: 'token_expired' } }))
-      
-      throw new Error('Session expired. Please login again.')
+      console.warn('Token refresh failed (ignored):', refreshError)
     }
   }
   

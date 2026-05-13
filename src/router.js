@@ -3,8 +3,6 @@ import { createRouter, createWebHistory } from 'vue-router'
 import DashboardPage from '@/app/shared/views/dashboard-page.vue'
 import PageNotFound from '@/app/shared/views/page-not-found.vue'
 import NotificationsPage from '@/app/notification/presentation/views/notifications-page.vue'
-import { useUserStore } from '@/app/iam/application/user.store.js'
-import { tokenManager } from '@/app/shared/infrastructure/apiClient.js'
 import { IS_LOCAL_TEST_MODE } from '@/app/iam/infrastructure/local-auth.js'
 
 // Import nested route modules
@@ -98,76 +96,11 @@ const router = createRouter({
   routes
 })
 
-// Navigation guard with JWT validation
-router.beforeEach(async (to, from, next) => {
-  console.log(`🚀 Navigation from ${from.name || 'unknown'} to ${to.name || to.path}`)
-  
-  // Set page title
+// Navigation guard - auth checks disabled
+router.beforeEach((to, from, next) => {
   const baseTitle = 'MOVEO'
   document.title = to.meta?.title ? `${baseTitle} - ${to.meta.title}` : baseTitle
-
-  if (IS_LOCAL_TEST_MODE) {
-    next()
-    return
-  }
-  
-  const userStore = useUserStore()
-  const requiresAuth = to.meta?.requiresAuth
-  const requiresRole = to.meta?.requiresRole
-  const isGuestRoute = to.meta?.guest // Routes only for non-authenticated users
-  
-  // Check if user has valid JWT token
-  const hasValidToken = tokenManager.hasValidToken()
-  
-  // If going to a guest-only route (login/register) while authenticated
-  if (isGuestRoute && hasValidToken && userStore.isAuthenticated.value) {
-    console.log('✅ Already authenticated, redirecting to dashboard')
-    const role = userStore.userRole.value
-    if (role === 'renter') {
-      next('/rental/browse')
-    } else if (role === 'owner') {
-      next('/rental/my-vehicles')
-    } else {
-      next('/dashboard')
-    }
-    return
-  }
-  
-  // If route requires auth
-  if (requiresAuth) {
-    if (!hasValidToken) {
-      console.warn('⚠️ No valid token, redirecting to login')
-      next({ name: 'login', query: { redirect: to.fullPath } })
-      return
-    }
-    
-    // Verify user is still loaded in store
-    if (!userStore.isAuthenticated.value) {
-      // Try to restore from checkAuth
-      const isValid = await userStore.checkAuth()
-      if (!isValid) {
-        console.warn('⚠️ Auth check failed, redirecting to login')
-        next({ name: 'login', query: { redirect: to.fullPath } })
-        return
-      }
-    }
-  }
-  
-  // Check role requirements
-  if (requiresRole && userStore.userRole.value !== requiresRole) {
-    console.warn(`⚠️ Role ${requiresRole} required, user has ${userStore.userRole.value}`)
-    next({ name: 'dashboard' })
-    return
-  }
-  
   next()
 })
-
-// Handle auth:logout event from apiClient
-if (!IS_LOCAL_TEST_MODE && typeof window !== 'undefined') {
-  window.addEventListener('auth:logout', () => {
-    router.push({ name: 'login', query: { reason: 'session_expired' } })
-  })
-}
 
 export default router
