@@ -3,7 +3,10 @@
     "allow": [
       "PowerShell($env:SAUCE_USERNAME='oauth-andreowsp-b9bf0'; $env:SAUCE_ACCESS_KEY='57243bcb-0538-4a1a-8d11-de14486f18db'; $env:SAUCE_REGION='us-west-1'; npm run test:saucedemo)",
       "PowerShell(Start-Process \"https://app.saucelabs.com/tests/5d18a2715928436ab63282692cdc492f\")",
-      "PowerShell($env:SAUCE_USERNAME='oauth-andreowsp-b9bf0'; $env:SAUCE_ACCESS_KEY='57243bcb-0538-4a1a-8d11-de14486f18db'; $env:SAUCE_REGION='us-west-1'; $env:HOLD_SECONDS='240'; npm run test:pflavor)"
+      "PowerShell($env:SAUCE_USERNAME='oauth-andreowsp-b9bf0'; $env:SAUCE_ACCESS_KEY='57243bcb-0538-4a1a-8d11-de14486f18db'; $env:SAUCE_REGION='us-west-1'; $env:HOLD_SECONDS='240'; npm run test:pflavor)",
+      "Bash(python -c \"import selenium; print\\(selenium.__version__\\)\")",
+      "Bash(python tests/e2e/pflavor_selenium.py)",
+      "Bash(python tests/e2e/pflavor_add_vehicle.py)"
     ]
   }
 }
