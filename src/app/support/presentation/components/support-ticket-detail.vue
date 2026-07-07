@@ -51,11 +51,18 @@
       <!-- Main Info -->
       <Card class="ticket-main-card">
         <template #content>
-          <div class="ticket-type-badge">
-            <i :class="['pi', ticket.typeIcon]"></i>
-            <span>{{ ticket.typeLabel }}</span>
+          <div class="ticket-badges-row">
+            <div class="ticket-type-badge">
+              <i :class="['pi', ticket.typeIcon]"></i>
+              <span>{{ ticket.typeLabel }}</span>
+            </div>
+            <!-- HU37: número de seguimiento del ticket -->
+            <div class="ticket-tracking-badge" title="Número de seguimiento">
+              <i class="pi pi-hashtag"></i>
+              <span>{{ trackingNumber }}</span>
+            </div>
           </div>
-          
+
           <h1 class="ticket-title">{{ ticket.subject }}</h1>
           
           <div class="ticket-meta-info">
@@ -316,6 +323,18 @@ const proofFiles = ref([])
 const ticket = computed(() => supportStore.state.currentTicket)
 const loading = computed(() => supportStore.state.loading)
 const error = computed(() => supportStore.state.error)
+
+// HU37: número de seguimiento con formato #MOV-XXXXXX
+const trackingNumber = computed(() => {
+  const rawId = ticket.value?.id
+  if (rawId === undefined || rawId === null) return '#MOV-000000'
+  const numeric = Number(rawId)
+  if (!Number.isNaN(numeric)) {
+    return `#MOV-${String(numeric).padStart(6, '0')}`
+  }
+  const cleaned = String(rawId).replace(/[^a-zA-Z0-9]/g, '').toUpperCase()
+  return `#MOV-${cleaned.slice(-6).padStart(6, '0')}`
+})
 
 const userStore = useUserStore()
 const canCloseTicket = computed(() => {
@@ -583,6 +602,14 @@ onMounted(() => {
   margin-bottom: 2rem;
 }
 
+.ticket-badges-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
 .ticket-type-badge {
   display: inline-flex;
   align-items: center;
@@ -593,7 +620,21 @@ onMounted(() => {
   font-size: 0.875rem;
   font-weight: 500;
   color: var(--text-color-secondary);
-  margin-bottom: 1rem;
+}
+
+/* HU37: número de seguimiento */
+.ticket-tracking-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.5rem 1rem;
+  background: linear-gradient(135deg, #FFF3E0 0%, #FFE0B2 100%);
+  border: 1px solid #FF6F00;
+  border-radius: 20px;
+  font-size: 0.875rem;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  color: #E65100;
 }
 
 .ticket-title {

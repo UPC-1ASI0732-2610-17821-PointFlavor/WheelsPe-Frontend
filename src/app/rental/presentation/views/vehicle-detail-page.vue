@@ -236,15 +236,21 @@ function onRentalConfirmed(rental) {
         </div>
       </div>
 
-      <!-- Botón de reservar / comenzar aventura -->
-      <div class="actions-row" style="margin-top:1rem">
+      <!-- HU33: Barra de reserva fija (sticky) siempre visible al hacer scroll -->
+      <div
+        v-if="vehicle && vehicle.status === 'active'"
+        class="sticky-book-bar"
+      >
+        <div class="sticky-book-info">
+          <span class="sticky-price">S/ {{ vehicle.dailyPrice }}</span>
+          <span class="sticky-price-label">por día</span>
+        </div>
         <button
-          v-if="vehicle && vehicle.status === 'active'"
           @click="openRentalModal"
           class="btn-primary btn-book"
         >
           <i class="pi pi-play"></i>
-          {{ t('rental.vehicleDetail.proceedToRent') || 'Alquilar / Comenzar Aventura' }}
+          {{ t('rental.vehicleDetail.proceedToRent') || 'Reservar ahora' }}
         </button>
       </div>
 
@@ -471,13 +477,77 @@ function onRentalConfirmed(rental) {
   font-size: 0.75rem;
 }
 
+/* HU33: barra de reserva fija */
+.sticky-book-bar {
+  position: sticky;
+  bottom: 1rem;
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+  margin-top: 2rem;
+  padding: 1rem 1.5rem;
+  background: white;
+  border: 1px solid #e0e0e0;
+  border-radius: 16px;
+  box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.12);
+}
+
+.sticky-book-info {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.1;
+}
+
+.sticky-price {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: #FF6F00;
+}
+
+.sticky-price-label {
+  font-size: 0.85rem;
+  color: var(--neutral-gray, #666);
+}
+
+.btn-book {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.85rem 2rem;
+  background: linear-gradient(135deg, #FF6F00 0%, #FF8F00 100%);
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-weight: 700;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  box-shadow: 0 2px 8px rgba(255, 111, 0, 0.3);
+}
+
+.btn-book:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(255, 111, 0, 0.4);
+}
+
 @media (max-width: 768px) {
   .vehicle-info-card {
     grid-template-columns: 1fr;
   }
-  
+
   .vehicle-image {
     height: 200px;
+  }
+
+  .sticky-book-bar {
+    bottom: 0;
+    border-radius: 12px 12px 0 0;
+  }
+
+  .btn-book {
+    padding: 0.75rem 1.25rem;
   }
 }
 

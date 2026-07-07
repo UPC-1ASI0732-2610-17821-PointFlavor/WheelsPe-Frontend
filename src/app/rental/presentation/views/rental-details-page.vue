@@ -12,6 +12,19 @@
       </div>
 
       <div v-else-if="rental" class="rental-details">
+        <!-- HU36: confirmación clara tras cancelar -->
+        <div v-if="cancelSuccess" class="cancel-confirmation">
+          <i class="pi pi-check-circle"></i>
+          <div>
+            <h3>Reserva cancelada correctamente</h3>
+            <p>
+              Tu reserva #{{ rental.id }} fue cancelada. Se ha enviado la confirmación
+              a tu correo y notificaciones. Reembolso estimado:
+              <strong>S/ {{ lastRefund.toFixed(2) }}</strong>.
+            </p>
+          </div>
+        </div>
+
         <!-- Header -->
         <div class="details-header">
           <h1>Detalles del Alquiler #{{ rental.id }}</h1>
@@ -85,8 +98,16 @@
         </div>
 
         <!-- Actions -->
-        <div class="actions" v-if="rental.status === 'active' || rental.status === 'confirmed'">
-          <button @click="completeRental" class="btn btn-complete">
+        <div class="actions" v-if="canCancel || rental.status === 'active' || rental.status === 'confirmed'">
+          <button v-if="canCancel" @click="openCancelModal" class="btn btn-cancel">
+            <i class="pi pi-times-circle"></i>
+            Cancelar reserva
+          </button>
+          <button
+            v-if="rental.status === 'active' || rental.status === 'confirmed'"
+            @click="completeRental"
+            class="btn btn-complete"
+          >
             <i class="pi pi-check"></i>
             Marcar como Completado
           </button>
@@ -95,6 +116,48 @@
 
       <div v-else class="error">
         <p>No se encontró el alquiler</p>
+      </div>
+    </div>
+
+    <!-- HU35: modal de resumen antes de cancelar (reembolso y penalidades) -->
+    <div v-if="showCancelModal" class="modal-overlay" @click.self="closeCancelModal">
+      <div class="cancel-modal">
+        <div class="cancel-modal-header">
+          <h2><i class="pi pi-exclamation-triangle"></i> Resumen de cancelación</h2>
+          <button class="modal-close" @click="closeCancelModal" aria-label="Cerrar">
+            <i class="pi pi-times"></i>
+          </button>
+        </div>
+
+        <p class="cancel-modal-lead">
+          Antes de confirmar, revisa el detalle del reembolso y las penalidades
+          según la política de cancelación ({{ refund.policyLabel }}):
+        </p>
+
+        <div class="refund-breakdown">
+          <div class="refund-row">
+            <span>Total pagado</span>
+            <strong>S/ {{ refund.total.toFixed(2) }}</strong>
+          </div>
+          <div class="refund-row penalty">
+            <span>Penalidad por cancelación ({{ refund.penaltyPct }}%)</span>
+            <strong>- S/ {{ refund.penalty.toFixed(2) }}</strong>
+          </div>
+          <div class="refund-row total">
+            <span>Reembolso estimado</span>
+            <strong>S/ {{ refund.amount.toFixed(2) }}</strong>
+          </div>
+        </div>
+
+        <div class="cancel-modal-actions">
+          <button class="btn btn-keep" @click="closeCancelModal" :disabled="cancelling">
+            No, mantener reserva
+          </button>
+          <button class="btn btn-confirm-cancel" @click="confirmCancel" :disabled="cancelling">
+            <i class="pi pi-check"></i>
+            {{ cancelling ? 'Cancelando...' : 'Confirmar cancelación' }}
+          </button>
+        </div>
       </div>
     </div>
   </div>
@@ -112,8 +175,44 @@ const rentalStore = useRentalStore()
 const loading = ref(true)
 const rentalId = String(route.params.id)
 
+const showCancelModal = ref(false)
+const cancelling = ref(false)
+const cancelSuccess = ref(false)
+const lastRefund = ref(0)
+
 const rental = computed(() => {
   return rentalStore.state.rentals.find(r => String(r.id) === rentalId)
+})
+
+// HU35: solo se puede cancelar reservas aún no finalizadas
+const canCancel = computed(() => {
+  if (!rental.value) return false
+  return ['pending', 'confirmed', 'active'].includes(rental.value.status)
+})
+
+// HU35: cálculo del reembolso/penalidad según cuánto falta para el inicio
+const refund = computed(() => {
+  const total = Number(rental.value?.totalPrice || 0)
+  const now = new Date()
+  const start = new Date(rental.value?.startDate)
+  const daysUntilStart = Math.ceil((start - now) / (1000 * 60 * 60 * 24))
+
+  let penaltyPct = 0
+  let policyLabel = 'flexible'
+  if (daysUntilStart < 2) {
+    penaltyPct = 50
+    policyLabel = 'menos de 48 h'
+  } else if (daysUntilStart < 7) {
+    penaltyPct = 20
+    policyLabel = '2 a 6 días de anticipación'
+  } else {
+    penaltyPct = 0
+    policyLabel = '7 o más días de anticipación'
+  }
+
+  const penalty = Number(((total * penaltyPct) / 100).toFixed(2))
+  const amount = Number((total - penalty).toFixed(2))
+  return { total, penaltyPct, penalty, amount, daysUntilStart, policyLabel }
 })
 
 const vehicle = computed(() => {
@@ -169,6 +268,32 @@ const getStatusLabel = (status) => {
     'cancelled': 'Cancelado'
   }
   return labels[status] || status
+}
+
+const openCancelModal = () => {
+  showCancelModal.value = true
+}
+
+const closeCancelModal = () => {
+  if (cancelling.value) return
+  showCancelModal.value = false
+}
+
+// HU36: cancelar y mostrar confirmación clara
+const confirmCancel = async () => {
+  cancelling.value = true
+  try {
+    lastRefund.value = refund.value.amount
+    await rentalStore.updateRentalStatus(rentalId, 'cancelled')
+    await rentalStore.loadRentals()
+    showCancelModal.value = false
+    cancelSuccess.value = true
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+  } catch (error) {
+    console.error('Error cancelling rental:', error)
+  } finally {
+    cancelling.value = false
+  }
 }
 
 const completeRental = async () => {
@@ -414,6 +539,170 @@ const completeRental = async () => {
 .btn-complete:hover {
   transform: translateY(-2px);
   box-shadow: 0 4px 12px rgba(76, 175, 80, 0.3);
+}
+
+.btn-cancel {
+  background: white;
+  border: 2px solid #dc3545;
+  color: #dc3545;
+}
+
+.btn-cancel:hover {
+  background: #dc3545;
+  color: white;
+  transform: translateY(-2px);
+}
+
+.actions {
+  gap: 1rem;
+}
+
+/* HU36: banner de confirmación de cancelación */
+.cancel-confirmation {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1.25rem 1.5rem;
+  margin-bottom: 1.5rem;
+  background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%);
+  border-left: 5px solid #22c55e;
+  border-radius: 12px;
+}
+
+.cancel-confirmation > i {
+  font-size: 2rem;
+  color: #16a34a;
+}
+
+.cancel-confirmation h3 {
+  margin: 0 0 0.25rem 0;
+  color: #166534;
+}
+
+.cancel-confirmation p {
+  margin: 0;
+  color: #15803d;
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
+/* HU35: modal de resumen de cancelación */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  z-index: 1000;
+}
+
+.cancel-modal {
+  background: white;
+  border-radius: 16px;
+  padding: 1.75rem;
+  width: 100%;
+  max-width: 480px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.25);
+}
+
+.cancel-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.cancel-modal-header h2 {
+  margin: 0;
+  font-size: 1.35rem;
+  color: #b45309;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.modal-close {
+  background: none;
+  border: none;
+  font-size: 1.1rem;
+  color: #666;
+  cursor: pointer;
+}
+
+.cancel-modal-lead {
+  color: #555;
+  font-size: 0.9rem;
+  line-height: 1.5;
+  margin: 0 0 1.25rem 0;
+}
+
+.refund-breakdown {
+  background: #f8f9fa;
+  border-radius: 12px;
+  padding: 1rem 1.25rem;
+  margin-bottom: 1.5rem;
+}
+
+.refund-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5rem 0;
+  color: #444;
+  font-size: 0.95rem;
+}
+
+.refund-row.penalty strong {
+  color: #dc3545;
+}
+
+.refund-row.total {
+  border-top: 1px solid #e0e0e0;
+  margin-top: 0.25rem;
+  padding-top: 0.75rem;
+  font-size: 1.1rem;
+}
+
+.refund-row.total strong {
+  color: #16a34a;
+  font-size: 1.25rem;
+}
+
+.cancel-modal-actions {
+  display: flex;
+  gap: 0.75rem;
+}
+
+.cancel-modal-actions .btn {
+  flex: 1;
+  justify-content: center;
+}
+
+.btn-keep {
+  background: white;
+  border: 2px solid #ccc;
+  color: #444;
+}
+
+.btn-keep:hover {
+  background: #f5f5f5;
+}
+
+.btn-confirm-cancel {
+  background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+  color: white;
+}
+
+.btn-confirm-cancel:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(220, 53, 69, 0.3);
+}
+
+.btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
 }
 
 .error {

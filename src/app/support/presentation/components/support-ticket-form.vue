@@ -23,6 +23,23 @@
         </small>
       </div>
 
+      <!-- HU38: categoría del ticket -->
+      <div class="form-group">
+        <label for="category">Categoría *</label>
+        <Dropdown
+          id="category"
+          v-model="formData.category"
+          :options="categoryOptions"
+          optionLabel="label"
+          optionValue="value"
+          placeholder="Selecciona una categoría"
+          :class="{ 'p-invalid': submitted && !formData.category }"
+        />
+        <small v-if="submitted && !formData.category" class="p-error">
+          Selecciona una categoría
+        </small>
+      </div>
+
       <div v-if="formData.type === 'damage'" class="form-group">
         <label for="vehicle">{{ $t('support.vehicle') }} *</label>
         <Dropdown
@@ -236,6 +253,7 @@ const vehicles = ref([])
 
 const formData = ref({
   type: null,
+  category: null,
   vehicleId: null,
   rentalId: null,
   renterId: null,
@@ -245,6 +263,16 @@ const formData = ref({
   estimatedCost: 0,
   attachments: []
 })
+
+// HU38: categorías del ticket
+const categoryOptions = [
+  { label: 'Limpieza', value: 'cleaning' },
+  { label: 'Mecánico / Avería', value: 'mechanical' },
+  { label: 'Documentación', value: 'documentation' },
+  { label: 'Atención al cliente', value: 'customer_service' },
+  { label: 'Facturación / Pagos', value: 'billing' },
+  { label: 'Otro', value: 'other' }
+]
 
 const typeOptions = [
   { label: t('support.type.damage'), value: 'damage' },
@@ -385,6 +413,7 @@ const closeDialog = () => {
 const resetForm = () => {
   formData.value = {
     type: null,
+    category: null,
     vehicleId: null,
     rentalId: null,
     renterId: null,
@@ -411,6 +440,7 @@ const removeAttachment = (index) => {
 
 const validateForm = () => {
   if (!formData.value.type) return false
+  if (!formData.value.category) return false
   if (!formData.value.priority) return false
   if (!formData.value.subject) return false
   if (!formData.value.description) return false
@@ -443,6 +473,7 @@ const submitTicket = async () => {
       userName: `${user.firstName} ${user.lastName}`,
       userRole: user.role,
       type: formData.value.type,
+      category: formData.value.category,
       subject: formData.value.subject,
       description: formData.value.description,
       priority: formData.value.priority,

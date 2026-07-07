@@ -49,33 +49,48 @@
 
         <!-- Grid de vehículos -->
         <div v-if="filteredVehicles.length" class="vehicles-grid">
-          <div 
-            v-for="(vehicle, index) in filteredVehicles" 
+          <div
+            v-for="(vehicle, index) in filteredVehicles"
             :key="vehicle.id ?? `vehicle-${index}`"
             class="vehicle-card"
-            @click="openCalendar(vehicle)"
           >
-            <div class="vehicle-image">
-              <i class="pi pi-car"></i>
+            <div
+              class="vehicle-image"
+              role="img"
+              :aria-label="`Foto del vehículo ${vehicle.brand} ${vehicle.model} ${vehicle.year}, color ${vehicle.color}, ${vehicle.transmission}`"
+            >
+              <i class="pi pi-car" aria-hidden="true"></i>
               <div class="vehicle-price">
                 <span class="price">S/ {{ vehicle.dailyPrice }}</span>
                 <span class="period">/{{ t('rental.browse.vehicleCard.perDay') }}</span>
               </div>
             </div>
-            
+
             <div class="vehicle-info">
               <h3 class="vehicle-name">{{ vehicle.brand }} {{ vehicle.model }}</h3>
               <p class="vehicle-year">{{ vehicle.year }} • {{ vehicle.color }}</p>
-              
+
               <div class="vehicle-features">
                 <span><i class="pi pi-users"></i> {{ vehicle.seats }}</span>
                 <span><i class="pi pi-cog"></i> {{ vehicle.transmission }}</span>
                 <span><i class="pi pi-bolt"></i> {{ vehicle.fuelType }}</span>
               </div>
-              
+
               <div class="vehicle-location">
                 <i class="pi pi-map-marker"></i>
                 {{ vehicle.location?.district || 'Lima' }}
+              </div>
+
+              <!-- HU34: acciones explícitas en la card -->
+              <div class="vehicle-actions">
+                <button class="btn-details" @click.stop="goToDetails(vehicle)">
+                  <i class="pi pi-eye"></i>
+                  Ver detalles
+                </button>
+                <button class="btn-reserve" @click.stop="openCalendar(vehicle)">
+                  <i class="pi pi-calendar-plus"></i>
+                  Reservar
+                </button>
               </div>
             </div>
           </div>
@@ -101,11 +116,13 @@
 <script setup>
 import { onMounted, ref, computed } from 'vue'
 import { useI18n } from 'vue-i18n'
+import { useRouter } from 'vue-router'
 import { state, loadVehicles, selectVehicle, selectedVehicle, filteredVehicles, setFilters, setSortBy, clearFilters } from '@/app/rental/application/rental.store.js'
 import SearchFilters from '@/app/rental/presentation/components/search-filters.vue'
 import RentalFlowModal from '@/app/rental/presentation/components/rental-flow-modal.vue'
 
 const { t } = useI18n()
+const router = useRouter()
 const loading = ref(false)
 const showRentalFlow = ref(false)
 const currentSortBy = ref('createdAt')
@@ -132,6 +149,10 @@ function handleSortChange() {
 
 function clearAllFilters() {
   clearFilters()
+}
+
+function goToDetails(vehicle) {
+  router.push(`/rental/vehicles/${vehicle.id}`)
 }
 
 function openCalendar(vehicle) {
@@ -335,7 +356,52 @@ onMounted(() => { reload() })
   overflow: hidden;
   box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
   transition: all 0.3s ease;
+}
+
+/* HU34: acciones de la card */
+.vehicle-actions {
+  display: flex;
+  gap: 0.75rem;
+  padding-top: 1rem;
+  margin-top: 0.25rem;
+  border-top: 1px solid #e0e0e0;
+}
+
+.btn-details,
+.btn-reserve {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  padding: 0.65rem 0.75rem;
+  border-radius: 10px;
+  font-weight: 600;
+  font-size: 0.9rem;
   cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.btn-details {
+  background: transparent;
+  border: 2px solid #FF6F00;
+  color: #FF6F00;
+}
+
+.btn-details:hover {
+  background: #FFF3E0;
+}
+
+.btn-reserve {
+  background: linear-gradient(135deg, #FF6F00 0%, #FF8F00 100%);
+  border: 2px solid transparent;
+  color: white;
+  box-shadow: 0 2px 8px rgba(255, 111, 0, 0.3);
+}
+
+.btn-reserve:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(255, 111, 0, 0.4);
 }
 
 .vehicle-card:hover {
