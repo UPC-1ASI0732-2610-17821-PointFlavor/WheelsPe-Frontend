@@ -3,7 +3,17 @@
     <div class="auth-container">
       <!-- Logo de MOVEO -->
       <router-link to="/" class="auth-logo">
-        <span class="logo-icon">🚗</span>
+        <svg class="logo-mark" width="44" height="44" viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <rect width="44" height="44" rx="12" fill="url(#moveoLogoGradient)" />
+          <path d="M11 31V15l6 8 6-8v16" stroke="#fff" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" />
+          <path d="M27 31V15l6 8" stroke="#fff" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" opacity="0.85" />
+          <defs>
+            <linearGradient id="moveoLogoGradient" x1="0" y1="0" x2="44" y2="44" gradientUnits="userSpaceOnUse">
+              <stop stop-color="#FF6F00" />
+              <stop offset="1" stop-color="#FF8F00" />
+            </linearGradient>
+          </defs>
+        </svg>
         <span class="logo-text">MOVEO</span>
       </router-link>
 
@@ -86,9 +96,9 @@ const currentYear = computed(() => new Date().getFullYear())
   transform: scale(1.05);
 }
 
-.logo-icon {
-  font-size: 3rem;
-  filter: drop-shadow(0 4px 8px rgba(255, 111, 0, 0.5));
+.logo-mark {
+  filter: drop-shadow(0 4px 12px rgba(255, 111, 0, 0.45));
+  flex-shrink: 0;
 }
 
 .logo-text {
@@ -234,8 +244,9 @@ const currentYear = computed(() => new Date().getFullYear())
     font-size: 2rem;
   }
 
-  .logo-icon {
-    font-size: 2.5rem;
+  .logo-mark {
+    width: 38px;
+    height: 38px;
   }
 
   .footer-links {

@@ -1,7 +1,26 @@
 /* ------------------ FONT FAMILIES ------------------ */
 :root {
-    --font-family-primary: 'Inter', sans-serif;
-    --font-family-secondary: 'Poppins', sans-serif;
+    /* Toda la tipografía de la app usa Manrope */
+    --font-family-primary: 'Manrope', sans-serif;
+    --font-family-secondary: 'Manrope', sans-serif;
+    /* Alias usados por algunas vistas (login, etc.) */
+    --font-primary: 'Manrope', sans-serif;
+    --font-secondary: 'Manrope', sans-serif;
+    /* Token de PrimeVue */
+    --p-font-family: 'Manrope', sans-serif;
+}
+
+/* Forzar Manrope de forma global (incluye componentes PrimeVue) */
+html,
+body,
+button,
+input,
+textarea,
+select,
+optgroup,
+.p-component,
+.p-component * {
+    font-family: 'Manrope', sans-serif;
 }
 
 /* ------------------ HEADINGS ------------------ */

@@ -14,6 +14,8 @@ export default defineConfig({
     environment: 'jsdom',
     css: true,
     reporters: 'verbose',
-    exclude: ['tests/e2e/**']
+    // Solo nuestras pruebas unit y functional (evita recoger *.test.* de node_modules)
+    include: ['tests/unit/**/*.{test,spec}.js', 'tests/functional/**/*.{test,spec}.js'],
+    exclude: ['**/node_modules/**', 'tests/e2e/**']
   }
 })
