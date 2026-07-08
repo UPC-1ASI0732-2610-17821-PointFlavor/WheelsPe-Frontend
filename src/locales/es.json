@@ -487,6 +487,8 @@
       "specifications": "Especificaciones",
       "pricePerDay": "Precio por día",
       "rentNow": "Alquilar Ahora",
+      "proceedToRent": "Reservar ahora",
+      "deposit": "Depósito",
       "features": {
         "transmission": "Transmisión",
         "fuelType": "Combustible",

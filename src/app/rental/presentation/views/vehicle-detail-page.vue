@@ -153,11 +153,11 @@ function onRentalConfirmed(rental) {
 
           <div class="pricing">
             <div class="price-item">
-              <span class="label">{{ t('rental.vehicleDetail.pricePerDay') }}:</span>
+              <span class="label">{{ t('rental.vehicleDetail.pricePerDay') }}</span>
               <span class="price">S/ {{ vehicle.dailyPrice }}</span>
             </div>
-            <div class="price-item">
-              <span class="label">{{ t('rental.addVehicle.fields.dailyPrice') }}:</span>
+            <div class="price-item price-item--secondary">
+              <span class="label">{{ t('rental.vehicleDetail.deposit') }}</span>
               <span class="price">S/ {{ vehicle.depositAmount }}</span>
             </div>
           </div>
@@ -249,8 +249,8 @@ function onRentalConfirmed(rental) {
           @click="openRentalModal"
           class="btn-primary btn-book"
         >
-          <i class="pi pi-play"></i>
-          {{ t('rental.vehicleDetail.proceedToRent') || 'Reservar ahora' }}
+          <i class="pi pi-calendar-plus"></i>
+          {{ t('rental.vehicleDetail.proceedToRent') }}
         </button>
       </div>
 
@@ -400,27 +400,44 @@ function onRentalConfirmed(rental) {
 
 .pricing {
   display: flex;
-  gap: 2rem;
-  padding: 1rem;
-  background: #f5f7fa;
-  border-radius: 8px;
+  gap: 1rem;
+  padding: 0.25rem;
+  background: transparent;
+  border-radius: 12px;
 }
 
 .price-item {
+  flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 0.25rem;
+  gap: 0.35rem;
+  padding: 1rem 1.25rem;
+  background: linear-gradient(135deg, #FFF3E0 0%, #FFE0B2 100%);
+  border-radius: 12px;
+  border: 1px solid rgba(255, 111, 0, 0.15);
+}
+
+.price-item--secondary {
+  background: #f5f7fa;
+  border-color: #e0e0e0;
 }
 
 .price-item .label {
-  font-size: 0.875rem;
-  color: var(--neutral-gray);
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  color: var(--neutral-gray, #666);
 }
 
 .price-item .price {
-  font-size: 1.5rem;
-  font-weight: 700;
-  color: var(--accent-orange);
+  font-size: 1.6rem;
+  font-weight: 800;
+  color: var(--accent-orange, #FF6F00);
+}
+
+.price-item--secondary .price {
+  color: #475569;
 }
 
 .location {

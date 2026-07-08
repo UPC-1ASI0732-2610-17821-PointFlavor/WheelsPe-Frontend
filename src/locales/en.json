@@ -484,6 +484,8 @@
       "specifications": "Specifications",
       "pricePerDay": "Price per day",
       "rentNow": "Rent Now",
+      "proceedToRent": "Book Now",
+      "deposit": "Deposit",
       "features": {
         "transmission": "Transmission",
         "fuelType": "Fuel Type",
